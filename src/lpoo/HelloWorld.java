@@ -55,17 +55,41 @@ public class HelloWorld {
 
 	}
 
-	public static int[] findHero(char a[][]) {
+	public static int[] findChar(char a[][], char c) {
 		int b[] = new int[2];
 		for(int i = 0; i < a.length; i++)
 			for(int j = 0; j < a[i].length; j++)
-				if (a[i][j] == 'H') {
+				if (a[i][j] == c) {
 					b[0] = i;
 					b[1] = j;
 				}
 		return b;
 	}
 
+	public static void alohomora(char [][] aMatrix){
+		for(int i = 0; i < aMatrix.length; i++)
+			for(int j = 0; j < aMatrix[i].length; j++)
+				if(aMatrix[i][j] == 'I')
+					aMatrix[i][j] = 'S';
+	}
+	
+	public static boolean nextLvl(int []posH, char[][] a) {
+		
+		if((posH[0] == 0) || (posH[0] == a.length - 1) || 
+				(posH[1] == 0) || posH[1] == a[0].length) return true;
+		return false;
+	}
+	
+	public static boolean guardScan(int []posH, char [][] a) {
+		
+		int i = posH[0];
+		int j = posH[1];
+		if(a[i - 1][j] == 'G' || a[i + 1][j] == 'G' || a[i][j - 1] == 'G' || a[i][j + 1] == 'G')
+			return true;
+		
+		return false;
+	}
+	
 	public static void main(String args[]) {
 		System.out.println("Hello World");
 
@@ -84,15 +108,24 @@ public class HelloWorld {
 				{'X',' ','I',' ','I',' ','X','K',' ','X'},
 				{'X','X','X','X','X','X','X','X','X','X'}
 		};
-		int [] pos;
-
+		int [] posH;//Pos Hero
+		int [] posK = findChar(tabuleiro, 'K');//Pos Lever
+		boolean lvl = false;
+		
 		while(true) { 
 			printMatrix(tabuleiro);
-			pos = findHero(tabuleiro);
+			posH = findChar(tabuleiro, 'H');
+			lvl = nextLvl(posH, tabuleiro);
+			if(lvl == true) break;
 			s = scan.next().charAt(0);
-			System.out.println(s);
-			updatePosition(s, tabuleiro, pos[0], pos[1]);
+			updatePosition(s, tabuleiro, posH[0], posH[1]);
+			if(guardScan(posH, tabuleiro)) break;
+			if(posH[0] == posK[0] && posH[1] == posK[1])
+				alohomora(tabuleiro);
 		}
+		
+		if (lvl == true) System.out.println("\nGG WP");
+		else System.out.println("\nGG EZ");
 
 	}
 }
