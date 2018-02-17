@@ -27,27 +27,27 @@ public class HelloWorld {
 		return aMatrix[l][c] != 'X' && aMatrix[l][c] != 'I';
 	}
 
-	public static void updatePosition(char key, char[][] aMatrix, int lH, int cH) {
+	public static void updatePosition(char key, char[][] aMatrix, int lH, int cH, char ca) {
 
 		if(key == 'd' || key == 'D') {
 			if(validateMovement(lH, cH+1, aMatrix)) {
 				aMatrix[lH][cH] = ' ';
-				aMatrix[lH][cH+1] = 'H'; //TODO: Nao matar o guarda ;)
+				aMatrix[lH][cH+1] = ca; //TODO: Nao matar o guarda ;)
 			}
 		}else if(key == 'a' || key == 'A') {
 			if(validateMovement(lH, cH-1, aMatrix)) {
 				aMatrix[lH][cH] = ' ';
-				aMatrix[lH][cH-1] = 'H';
+				aMatrix[lH][cH-1] = ca;
 			} //TODO: Nao matar o guarda ;)
 		}else if(key == 's' || key == 'S') {
 			if(validateMovement(lH+1, cH, aMatrix)) {
 				aMatrix[lH][cH] = ' ';
-				aMatrix[lH+1][cH] = 'H';
+				aMatrix[lH+1][cH] = ca;
 			}//TODO: Nao matar o guarda ;)
 		}else if(key == 'w' || key == 'W') {
 			if(validateMovement(lH - 1, cH, aMatrix)) {
 				aMatrix[lH][cH] = ' ';
-				aMatrix[lH-1][cH] = 'H';
+				aMatrix[lH-1][cH] = ca;
 			}//TODO: Nao matar o guarda ;)
 			}
 
@@ -56,7 +56,8 @@ public class HelloWorld {
 	}
 
 	public static int[] findChar(char a[][], char c) {
-		int b[] = new int[2];
+		
+		int b[] = {-1, -1};
 		for(int i = 0; i < a.length; i++)
 			for(int j = 0; j < a[i].length; j++)
 				if (a[i][j] == c) {
@@ -108,20 +109,32 @@ public class HelloWorld {
 				{'X',' ','I',' ','I',' ','X','K',' ','X'},
 				{'X','X','X','X','X','X','X','X','X','X'}
 		};
+		
+		String patrolRoute = "assssaaaaaasdddddddwwwww";
+		int patrolCount = 0;
+		
 		int [] posH;//Pos Hero
 		int [] posK = findChar(tabuleiro, 'K');//Pos Lever
+		int [] posG;
 		boolean lvl = false;
 		
 		while(true) { 
+			
 			printMatrix(tabuleiro);
-			posH = findChar(tabuleiro, 'H');
-			lvl = nextLvl(posH, tabuleiro);
+			
+			posH = findChar(tabuleiro, 'H'); //gets the Heros position
+			if (posH[0] == -1) break;
+			posG = findChar(tabuleiro, 'G'); //gets the Guards position
+			lvl = nextLvl(posH, tabuleiro); 
 			if(lvl == true) break;
-			s = scan.next().charAt(0);
-			updatePosition(s, tabuleiro, posH[0], posH[1]);
 			if(guardScan(posH, tabuleiro)) break;
 			if(posH[0] == posK[0] && posH[1] == posK[1])
 				alohomora(tabuleiro);
+			s = scan.next().charAt(0);
+			updatePosition(s, tabuleiro, posH[0], posH[1], 'H');
+			updatePosition(patrolRoute.charAt(patrolCount), tabuleiro, posG[0], posG[1], 'G');
+			patrolCount++;
+			if(patrolCount == patrolRoute.length()) patrolCount = 0;
 		}
 		
 		if (lvl == true) System.out.println("\nGG WP");
