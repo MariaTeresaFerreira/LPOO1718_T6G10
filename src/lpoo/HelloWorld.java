@@ -85,10 +85,42 @@ public class HelloWorld {
 		
 		int i = posH[0];
 		int j = posH[1];
-		if(a[i - 1][j] == 'G' || a[i + 1][j] == 'G' || a[i][j - 1] == 'G' || a[i][j + 1] == 'G')
+		if(a[i - 1][j] == 'G' || a[i + 1][j] == 'G' || a[i][j - 1] == 'G' || a[i][j + 1] == 'G')//Guard
+			return true;
+		if(a[i - 1][j] == 'O' || a[i + 1][j] == 'O' || a[i][j - 1] == 'O' || a[i][j + 1] == 'O')//Ogre
+			return true;
+		if(a[i - 1][j] == '$' || a[i + 1][j] == '$' || a[i][j - 1] == '$' || a[i][j + 1] == '$')//Ogre that holds the key
 			return true;
 		
 		return false;
+	}
+
+	public static char[][] lvl2(){
+
+		char[][] tabul = {
+			{'X','X','X','X','X','X','X','X','X'},
+			{'I',' ',' ',' ','O',' ',' ','k','X'},
+			{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+			{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+			{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+			{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+			{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+			{'X','H',' ',' ',' ',' ',' ',' ','X'},
+			{'X','X','X','X','X','X','X','X','X'}
+		};
+		return tabul;
+	}
+	
+	public static char randommov() {
+		Random randomno = new Random();
+		int n = randomno.nextInt(4);
+		if(n == 0) {
+			return 'w';
+		}else if(n == 1) {
+			return 'a';
+		}else if(n == 2) {
+			return 's';
+		}else return 'd';
 	}
 	
 	public static void main(String args[]) {
@@ -106,35 +138,72 @@ public class HelloWorld {
 				{'I',' ',' ',' ',' ',' ',' ',' ',' ','X'},
 				{'I',' ',' ',' ',' ',' ',' ',' ',' ','X'},
 				{'X','X','X',' ','X','X','X','X',' ','X'},
-				{'X',' ','I',' ','I',' ','X','K',' ','X'},
+				{'X',' ','I',' ','I',' ','X','k',' ','X'},
 				{'X','X','X','X','X','X','X','X','X','X'}
 		};
 		
 		String patrolRoute = "assssaaaaaasdddddddwwwww";
 		int patrolCount = 0;
 		
-		int [] posH;//Pos Hero
-		int [] posK = findChar(tabuleiro, 'K');//Pos Lever
-		int [] posG;
-		boolean lvl = false;
-		
-		while(true) { 
+		char hero = 'H', guard = 'G', ogre = 'O', key = 'k', lever = 'k';
+		int [] posH = findChar(tabuleiro, hero);//Pos Hero
+		int [] posK = findChar(tabuleiro, lever);//Pos Lever
+		int [] posG = findChar(tabuleiro, guard);
+		boolean lvl = true;//mudar para false
+		while(posH[0] != -1) { 
 			
 			printMatrix(tabuleiro);
 			
-			posH = findChar(tabuleiro, 'H'); //gets the Heros position
-			if (posH[0] == -1) break;
-			posG = findChar(tabuleiro, 'G'); //gets the Guards position
+			posH = findChar(tabuleiro, hero); //gets the Heros position
+			posG = findChar(tabuleiro, guard); //gets the Guards position
 			lvl = nextLvl(posH, tabuleiro); 
 			if(lvl == true) break;
 			if(guardScan(posH, tabuleiro)) break;
 			if(posH[0] == posK[0] && posH[1] == posK[1])
 				alohomora(tabuleiro);
 			s = scan.next().charAt(0);
-			updatePosition(s, tabuleiro, posH[0], posH[1], 'H');
-			updatePosition(patrolRoute.charAt(patrolCount), tabuleiro, posG[0], posG[1], 'G');
+			updatePosition(s, tabuleiro, posH[0], posH[1], hero);
+			updatePosition(patrolRoute.charAt(patrolCount), tabuleiro, posG[0], posG[1], guard);
 			patrolCount++;
 			if(patrolCount == patrolRoute.length()) patrolCount = 0;
+		}
+		
+		System.out.print('\n');
+		guard = 'O';
+		
+		if(lvl == true) {
+			tabuleiro = lvl2();
+			posH = findChar(tabuleiro, hero);
+			lvl = false;
+			boolean unlock = false;
+			posK = findChar(tabuleiro, lever);
+			while(posH[0] != -1) {
+				if(lvl == true) break;
+				if(guardScan(posH, tabuleiro)) break;
+				printMatrix(tabuleiro);
+				posH = findChar(tabuleiro, hero);
+				posG = findChar(tabuleiro, guard);
+				if(posG[0] == -1) posG = findChar(tabuleiro, lever);
+				if(posH[0] == posK[0] && posH[1] == posK[1]) hero = 'K';
+				if(posG[0] == posK[0] && posG[1] == posK[1] && tabuleiro[posK[0]][posK[1]] != 'O') {
+					guard = '$';
+					tabuleiro[posG[0]][posG[1]] = '$';
+				}else {
+					guard = 'O';
+				}
+				
+				if (hero != 'K' && guard != '$') {
+					tabuleiro[posK[0]][posK[1]] = 'k';
+				}
+				
+				s = scan.next().charAt(0);
+				if (posH[0]!= -1)updatePosition(s, tabuleiro, posH[0], posH[1], hero);
+				if (posH[0] == 1 && posH[1] == 1 && unlock == false && hero == 'K') unlock = true;
+				if (unlock == true) tabuleiro[1][0] = 'S';
+				updatePosition(randommov(), tabuleiro, posG[0], posG[1], guard);
+				lvl = nextLvl(posH, tabuleiro);
+				if(posH[0] == -1) lvl = true;
+			}
 		}
 		
 		if (lvl == true) System.out.println("\nGG WP");
