@@ -184,18 +184,17 @@ public class HelloWorld {
 				posH = findChar(tabuleiro, hero);
 				posG = findChar(tabuleiro, guard);
 				if(posG[0] == -1) posG = findChar(tabuleiro, lever);
-				if(posH[0] == posK[0] && posH[1] == posK[1]) hero = 'K';
-				if(posG[0] == posK[0] && posG[1] == posK[1] && tabuleiro[posK[0]][posK[1]] != 'O') {
+				if(posH[0] == posK[0] && posH[1] == posK[1]) {
+					hero = 'K';
+					tabuleiro[posH[0]][posH[1]] = 'K';
+				}
+				if(posG[0] == posK[0] && posG[1] == posK[1] && tabuleiro[posK[0]][posK[1]] != 'O' && hero != 'K') {
 					guard = '$';
 					tabuleiro[posG[0]][posG[1]] = '$';
-				}else {
+				}else if( hero != 'K') {
 					guard = 'O';
-				}
-				
-				if (hero != 'K' && guard != '$') {
 					tabuleiro[posK[0]][posK[1]] = 'k';
 				}
-				
 				s = scan.next().charAt(0);
 				if (posH[0]!= -1)updatePosition(s, tabuleiro, posH[0], posH[1], hero);
 				if (posH[0] == 1 && posH[1] == 1 && unlock == false && hero == 'K') unlock = true;
