@@ -122,6 +122,35 @@ public class HelloWorld {
 			return 's';
 		}else return 'd';
 	}
+	/*
+	public static boolean updateClub(int[] posG, char[][]aMatrix) {
+		int posC[] = posG;
+		do {
+			char mov = randommov();
+			if(mov == 'w')
+				posC[0]--;
+			if(mov == 'a')
+				posC[1]--;
+			if(mov=='s')
+				posC[0]++;
+			if(mov=='d')
+				posC[1]++;	
+		}while(!validateMovement(posC[0], posC[1], aMatrix));
+		
+		if(aMatrix[posC[0]][posC[1]] == 'K' ||aMatrix[posC[0]][posC[1]] == 'H')
+			return false;
+		else {
+			if (aMatrix[posC[0]][posC[1]] == 'k') {
+				aMatrix[posC[0]][posC[1]] = '$';
+			}
+			else aMatrix[posC[0]][posC[1]] = '*';
+			return true;
+		}
+		
+		
+	}*/
+	
+	
 	
 	public static void main(String args[]) {
 		System.out.println("Hello World");
@@ -170,6 +199,8 @@ public class HelloWorld {
 		
 		System.out.print('\n');
 		guard = 'O';
+		char club = '*';
+		int posC[] = new int[2];
 		
 		if(lvl == true) {
 			tabuleiro = lvl2();
@@ -181,8 +212,14 @@ public class HelloWorld {
 				if(lvl == true) break;
 				if(guardScan(posH, tabuleiro)) break;
 				printMatrix(tabuleiro);
+				
+				
+				posC = findChar(tabuleiro, club);
 				posH = findChar(tabuleiro, hero);
 				posG = findChar(tabuleiro, guard);
+				if(posC[0] == -1) {
+					posC = posG;
+				}
 				if(posG[0] == -1) posG = findChar(tabuleiro, lever);
 				if(posH[0] == posK[0] && posH[1] == posK[1]) {
 					hero = 'K';
@@ -200,6 +237,7 @@ public class HelloWorld {
 				if (posH[0] == 1 && posH[1] == 1 && unlock == false && hero == 'K') unlock = true;
 				if (unlock == true) tabuleiro[1][0] = 'S';
 				updatePosition(randommov(), tabuleiro, posG[0], posG[1], guard);
+				updatePosition(randommov(), tabuleiro, posG[0], posG[1], club);
 				lvl = nextLvl(posH, tabuleiro);
 				if(posH[0] == -1) lvl = true;
 			}
