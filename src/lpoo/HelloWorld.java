@@ -23,29 +23,36 @@ public class HelloWorld {
 		}
 	}
 
-	public static boolean validateMovement(int l, int c, char[][] aMatrix) {
-		return aMatrix[l][c] != 'X' && aMatrix[l][c] != 'I';
+	public static boolean validateMovement(int l, int c, char[][] aMatrix, char hero) {
+		
+		if (hero == 'K' || hero == 'H') {
+			return l < aMatrix.length && c < aMatrix[0].length && l >= 0 && c >= 0
+				&& aMatrix[l][c] != 'X' && aMatrix[l][c] != 'I' && aMatrix[l][c] != 'O';
+		}
+		return l < aMatrix.length && c < aMatrix[0].length && l > 0 && c > 0
+				&& aMatrix[l][c] != 'X' && aMatrix[l][c] != 'I' && aMatrix[l][c] != 'O';
+		
 	}
 
 	public static void updatePosition(char key, char[][] aMatrix, int lH, int cH, char ca) {
 
 		if(key == 'd' || key == 'D') {
-			if(validateMovement(lH, cH+1, aMatrix)) {
+			if(validateMovement(lH, cH+1, aMatrix, ca)) {
 				aMatrix[lH][cH] = ' ';
 				aMatrix[lH][cH+1] = ca; //TODO: Nao matar o guarda ;)
 			}
 		}else if(key == 'a' || key == 'A') {
-			if(validateMovement(lH, cH-1, aMatrix)) {
+			if(validateMovement(lH, cH-1, aMatrix, ca)) {
 				aMatrix[lH][cH] = ' ';
 				aMatrix[lH][cH-1] = ca;
 			} //TODO: Nao matar o guarda ;)
 		}else if(key == 's' || key == 'S') {
-			if(validateMovement(lH+1, cH, aMatrix)) {
+			if(validateMovement(lH+1, cH, aMatrix, ca)) {
 				aMatrix[lH][cH] = ' ';
 				aMatrix[lH+1][cH] = ca;
 			}//TODO: Nao matar o guarda ;)
 		}else if(key == 'w' || key == 'W') {
-			if(validateMovement(lH - 1, cH, aMatrix)) {
+			if(validateMovement(lH - 1, cH, aMatrix, ca)) {
 				aMatrix[lH][cH] = ' ';
 				aMatrix[lH-1][cH] = ca;
 			}//TODO: Nao matar o guarda ;)
@@ -85,13 +92,13 @@ public class HelloWorld {
 		
 		int i = posH[0];
 		int j = posH[1];
-		if(a[i - 1][j] == 'G' || a[i + 1][j] == 'G' || a[i][j - 1] == 'G' || a[i][j + 1] == 'G')//Guard
+		if(a[i - 1][j] == 'G' || a[i + 1][j] == 'G' || a[i][j - 1] == 'G' || a[i][j + 1] == 'G') {//Guard
 			return true;
-		if(a[i - 1][j] == 'O' || a[i + 1][j] == 'O' || a[i][j - 1] == 'O' || a[i][j + 1] == 'O')//Ogre
+		}else if(a[i - 1][j] == 'O' || a[i + 1][j] == 'O' || a[i][j - 1] == 'O' || a[i][j + 1] == 'O') {//Ogre
 			return true;
-		if(a[i - 1][j] == '$' || a[i + 1][j] == '$' || a[i][j - 1] == '$' || a[i][j + 1] == '$')//Ogre that holds the key
+		}else if(a[i - 1][j] == '$' || a[i + 1][j] == '$' || a[i][j - 1] == '$' || a[i][j + 1] == '$') {//Ogre that holds the key
 			return true;
-		
+		}
 		return false;
 	}
 
@@ -122,39 +129,61 @@ public class HelloWorld {
 			return 's';
 		}else return 'd';
 	}
-	/*
+	
+	public static void clearClub(int posG[], char aMatrix[][]) {
+		int i, j;
+		for(i = 0; i < aMatrix.length; i++) {
+			for (j = 0; j < aMatrix[0].length ; j++) {
+				if (aMatrix[i][j] == '*') {
+					aMatrix[i][j] = ' ';
+				}
+			}
+		}
+		
+		if(aMatrix[posG[0]][posG[1]] != '$') {
+			for(i = 0; i < aMatrix.length; i++) {
+				for (j = 0; j < aMatrix[0].length ; j++) {
+					if (aMatrix[i][j] == '$') {
+						aMatrix[i][j] = 'k';
+					}
+				}
+			}
+		}
+	}
+	
 	public static boolean updateClub(int[] posG, char[][]aMatrix) {
-		int posC[] = posG;
+		clearClub(posG, aMatrix);
+		int posC[] = new int [2]; 
+		posC[0] = posG[0];
+		posC[1] = posG[1];
 		do {
 			char mov = randommov();
-			if(mov == 'w')
-				posC[0]--;
-			if(mov == 'a')
-				posC[1]--;
-			if(mov=='s')
-				posC[0]++;
-			if(mov=='d')
-				posC[1]++;	
-		}while(!validateMovement(posC[0], posC[1], aMatrix));
-		
-		if(aMatrix[posC[0]][posC[1]] == 'K' ||aMatrix[posC[0]][posC[1]] == 'H')
-			return false;
-		else {
-			if (aMatrix[posC[0]][posC[1]] == 'k') {
-				aMatrix[posC[0]][posC[1]] = '$';
+			if(mov == 'w') {
+				posC[0] -= 1;
+			} else if(mov == 'a') {
+				posC[1] -= 1;
+			} else if(mov=='s') {
+				posC[0] += 1;
+			}else if(mov=='d') {
+				posC[1] += 1;
 			}
-			else aMatrix[posC[0]][posC[1]] = '*';
+		}while(!validateMovement(posC[0], posC[1], aMatrix, '*') && Math.abs(posG[0] - posC[0] + posG[1] - posC[1]) > 1);
+		if(aMatrix[posC[0]][posC[1]] == ' ') {
+			aMatrix[posC[0]][posC[1]] = '*';
+			return false;
+		}else if (aMatrix[posC[0]][posC[1]] == 'k') {
+			aMatrix[posC[0]][posC[1]] = '$';
+			return false;
+		}else if (aMatrix[posC[0]][posC[1]] == 'H' || aMatrix[posC[0]][posC[1]] == 'K') {
 			return true;
 		}
 		
-		
-	}*/
+		return false;
+	}
 	
 	
 	
 	public static void main(String args[]) {
-		System.out.println("Hello World");
-
 		Scanner scan = new Scanner(System.in);
 		char s = 'd';
 
@@ -199,7 +228,6 @@ public class HelloWorld {
 		
 		System.out.print('\n');
 		guard = 'O';
-		char club = '*';
 		int posC[] = new int[2];
 		
 		if(lvl == true) {
@@ -207,19 +235,18 @@ public class HelloWorld {
 			posH = findChar(tabuleiro, hero);
 			lvl = false;
 			boolean unlock = false;
+			boolean caught;
 			posK = findChar(tabuleiro, lever);
 			while(posH[0] != -1) {
+				lvl = (tabuleiro[1][0] == 'K');
 				if(lvl == true) break;
-				if(guardScan(posH, tabuleiro)) break;
+				if(caught = guardScan(posH, tabuleiro)) {
+					break;
+				}
+
 				printMatrix(tabuleiro);
-				
-				
-				posC = findChar(tabuleiro, club);
 				posH = findChar(tabuleiro, hero);
 				posG = findChar(tabuleiro, guard);
-				if(posC[0] == -1) {
-					posC = posG;
-				}
 				if(posG[0] == -1) posG = findChar(tabuleiro, lever);
 				if(posH[0] == posK[0] && posH[1] == posK[1]) {
 					hero = 'K';
@@ -235,11 +262,16 @@ public class HelloWorld {
 				s = scan.next().charAt(0);
 				if (posH[0]!= -1)updatePosition(s, tabuleiro, posH[0], posH[1], hero);
 				if (posH[0] == 1 && posH[1] == 1 && unlock == false && hero == 'K') unlock = true;
-				if (unlock == true) tabuleiro[1][0] = 'S';
+				if (unlock == true && tabuleiro[1][0] != 'K') tabuleiro[1][0] = 'S';
 				updatePosition(randommov(), tabuleiro, posG[0], posG[1], guard);
-				updatePosition(randommov(), tabuleiro, posG[0], posG[1], club);
-				lvl = nextLvl(posH, tabuleiro);
-				if(posH[0] == -1) lvl = true;
+				posG = findChar(tabuleiro, guard);
+				if (posG[0] == -1) {
+					posG[0] = 1;
+					posG[1] = 7;
+				}
+				if(updateClub(posG, tabuleiro) == true) {
+					break;
+				}
 			}
 		}
 		
