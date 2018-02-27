@@ -3,20 +3,36 @@ package dkeep.logic;
 public class Guard extends Enemy {
 	
 	private String route;
-	int patrolCount;
+	private String movs;
 	
 	public Guard(String nroute, char nrep, Coords coord) {
 		super(nrep, coord);
 		this.route = nroute;
-		this.patrolCount = 0;
+		this.movs = "";
+	}
+	
+	public void getNextMov() {
+		
+		int i = this.movs.length();
+		this.movs += this.route.substring(i, i+1);
+		
+	}
+	
+	public void nextMov() {
+		
+		if (movs == "" || movs.length() == route.length()) {
+			this.movs = this.route.substring(0, 1);
+		}else {
+			this.getNextMov();
+		}
+		
 	}
 	
 	public void moveGuard(char board [][]) {
 		
-		char key = this.route.charAt(this.patrolCount);
+		this.nextMov();
+		char key = this.movs.charAt(this.movs.length() - 1);
 		super.moveEnemy(key, board);
-		this.patrolCount++;
-		if (this.patrolCount <= route.length()) this.patrolCount = 0;
 	}
 	
 }

@@ -5,6 +5,7 @@ public class Hero {
 	private char rep;
 	private boolean armed;
 	private boolean alive;
+	private boolean haskey;
 	private Coords c;
 	
 	public Hero(char rep, Coords coord){
@@ -12,6 +13,7 @@ public class Hero {
 		this.armed = false;
 		this.c = coord;
 		this.alive = true;
+		this.haskey = false;
 	}
 	
 	public boolean validateHMov(char [][] board, Coords nc) {
@@ -53,4 +55,40 @@ public class Hero {
 		this.alive = false;
 	}
 	
+	public Coords getCoords() {
+		return this.c;
+	}
+	
+	public char getRep() {
+		return this.rep;
+	}
+	
+	public boolean isAlive() {
+		return this.alive;
+	}
+	
+	public boolean guardScan(char [][] board) {
+		int x0, x1, y0, y1;
+		x0 = this.c.X() - 1;
+		x1 = this.c.X() + 1;
+		y0 = this.c.Y() - 1;
+		y1 = this.c.Y() + 1;
+		if(x0 > 0) {
+			if ( board[ x0 ][ this.c.Y() ] == 'G') return true; 
+		}
+		
+		if (x1 < board.length) {
+			if ( board[ x1 ][ this.c.Y() ] == 'G') return true;
+		}
+		
+		if (y0 > 0) {
+			if(board[ this.c.X() ][ y0 ] == 'G') return true;
+		}
+		
+		if (y1 < board[0].length) {
+			if( board[ this.c.X() ][ y1 ] == 'G') return true;
+		}
+		
+		return false;
+	}
 }

@@ -2,8 +2,8 @@ package dkeep.logic;
 
 public class Enemy {
 	
-	private char rep;
-	private Coords c;
+	protected char rep;
+	protected Coords c;
 	int status;
 	
 	public Enemy(char nrep, Coords coords) {
@@ -47,6 +47,10 @@ public class Enemy {
 	
 	public Coords getCoords() {
 		return this.c;
+	}
+	
+	public char getRep() {
+		return this.rep;
 	}
 
 }

@@ -5,9 +5,12 @@ import java.util.*;
 public class Ogre extends Enemy{
 
 	private Coords club;
+	private char clubrep;
 	
-	public Ogre(char nrep, Coords coords) {
+	public Ogre(char nrep, Coords coords, Coords ccoords, char clubr) {
 		super(nrep, coords);
+		this.clubrep = clubr;
+		this.club = ccoords;
 	}
 	
 	public char randommov() {
@@ -53,5 +56,17 @@ public class Ogre extends Enemy{
 			}
 		}while(!this.validateCMov(board, nc));
 		this.club.setCoords(nc);
+		System.out.println(this.c.X());
+		System.out.println(this.c.Y());
+		System.out.println(this.club.X());
+		System.out.println(this.club.Y());
+	}
+	
+	public Coords getCCoords() {
+		return this.club;
+	}
+	
+	public char getCRep() {
+		return this.clubrep;
 	}
 }
