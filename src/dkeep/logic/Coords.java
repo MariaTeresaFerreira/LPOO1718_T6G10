@@ -10,6 +10,10 @@ public class Coords {
 		this.y = y;
 	}
 	
+	public boolean equal(Coords nc) {
+		return	this.x == nc.X() && this.y == nc.Y();
+	}
+	
 	public int X() {
 		return this.x;
 	}

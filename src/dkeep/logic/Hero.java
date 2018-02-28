@@ -5,7 +5,6 @@ public class Hero {
 	private char rep;
 	private boolean armed;
 	private boolean alive;
-	private boolean haskey;
 	private Coords c;
 	
 	public Hero(char rep, Coords coord){
@@ -13,7 +12,6 @@ public class Hero {
 		this.armed = false;
 		this.c = coord;
 		this.alive = true;
-		this.haskey = false;
 	}
 	
 	public boolean validateHMov(char [][] board, Coords nc) {

@@ -96,6 +96,7 @@ public class GameState {
 		Coords co = findChar(b, 'O');
 		Coords cc = new Coords(co.X(), co.Y() - 1);
 		Coords ce = new Coords(1, 0);
+		this.exits.clear();
 		this.exits.add(ce);
 		Ogre ogr = new Ogre('O', co, cc,'*');
 		this.board = b;
@@ -103,6 +104,11 @@ public class GameState {
 		this.level = 2;
 		this.hero = new Hero('H', ch);
 		this.ogres.add(ogr);
+		this.guards.clear();
+	}
+	
+	public void lvl3() {
+		this.level = 3;
 	}
 	
 	public GameState(int level) {
@@ -137,6 +143,8 @@ public class GameState {
 		Coords ch = this.hero.getCoords();
 		Coords cg;
 		Coords cc;
+		boolean ogreOnKey = false;
+		boolean clubOnKey = false;
 		this.board[ch.X()][ch.Y()] = this.hero.getRep();
 		int i = 0;
 		for (i = 0; i < this.guards.size(); i++) {
@@ -146,10 +154,30 @@ public class GameState {
 
 		for(i = 0; i < this.ogres.size(); i++) {
 			cg = this.ogres.get(i).getCoords();
+			ogreOnKey = ogreOnKey || (this.ogres.get(i).getCoords().equal(this.leverORkey) &&
+					this.hero.getRep() != 'K');
+			if (ogreOnKey) {
+				this.ogres.get(i).setRep('$');
+			}else {
+				this.ogres.get(i).setRep('O');
+			}
 			cc = this.ogres.get(i).getCCoords();
+			clubOnKey = clubOnKey || (this.ogres.get(i).getCCoords().equal(this.leverORkey) &&
+					this.hero.getRep() != 'K');
+			if(clubOnKey) {
+				this.ogres.get(i).setCRep('$');
+			}else {
+				this.ogres.get(i).setCRep('*');
+			}
+			
 			this.board[cg.X()][cg.Y()] = this.ogres.get(i).getRep();
 			this.board[cc.X()][cc.Y()] = this.ogres.get(i).getCRep();
+			//Fazer uma seq, de || com o ogreOnKey verificando se a entidade esta em cima da chave
 		}
+		
+		if (this.hero.getRep() != 'K' && !ogreOnKey && !clubOnKey) {
+			this.board[this.leverORkey.X()][this.leverORkey.Y()] = 'k';
+		} 
 		
 		
 	}
@@ -193,11 +221,129 @@ public class GameState {
 		}
 	}
 	
+	public void moveOgres() {
+		
+		for(int i = 0; i < this.ogres.size(); i++) {
+			this.ogres.get(i).moveOgre(this.ogres.get(i).randommov(), this.board);
+		}
+	}
+	
+	public void attackOgres() {
+		for (int i = 0; i < this.ogres.size(); i++) {
+			this.ogres.get(i).attackOgre(this.board);
+		}
+	}
+	
 	public Hero getHero() {
 		return this.hero;
 	}
 	
 	public char [][] getBoard(){
 		return this.board;
+	}
+	
+	public void playLvl1() {
+		
+		Scanner reader = new Scanner(System.in);
+		char key;
+		while(this.getHero().isAlive() && this.getLvl() == 1) {
+			this.printGameState();
+			key = reader.next().charAt(0);
+			this.getHero().moveHero(key, this.getBoard());
+			this.updateBoard();
+			this.moveGuards();
+			this.updateBoard();
+			if(this.getHero().guardScan(this.getBoard())) {
+				this.getHero().killHero();
+			}
+			this.unlockAll();
+			if(this.exit()) this.lvl2();
+			this.updateBoard();
+						
+		}
+	}
+	
+	public boolean isPlayerHit() {
+		int xh = this.hero.getCoords().X();
+		int yh = this.hero.getCoords().Y();
+		int xc, yc;
+		for (int i = 0; i < this.ogres.size(); i++) {
+			xc = this.ogres.get(i).getCCoords().X();
+			yc = this.ogres.get(i).getCCoords().Y();
+			if(xc == xh && yh == yc) return true;
+		}
+		return false;
+	}
+	
+	public boolean checkANUnlock(int x) {
+		/*if(this.getHero().getCoords().)*/
+		int xh, yh, xe, ye;
+		xh = this.hero.getCoords().X();
+		yh = this.hero.getCoords().Y();
+		for(int i = 0; i < this.exits.size(); i++) {
+			xe = this.exits.get(i).X();
+			ye = this.exits.get(i).Y();
+			if (xe == xh - 1 && ye == yh) {
+				if(x == 1) {
+					this.board[xe][ye] = 'S';
+				}
+				return true;
+			}else if (xe == xh + 1 && ye == yh) {
+				if(x == 1) {
+					this.board[xe][ye] = 'S';
+				}
+				return true;
+			}else if (xe == xh && ye == yh - 1) {
+				if(x == 1) {
+					this.board[xe][ye] = 'S';
+				}
+				return true;
+			}else if ( xe == xh && ye == yh + 1) {
+				if(x == 1) {
+					this.board[xe][ye] = 'S';
+				}
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void catchKey() {
+		int xh, yh, xl, yl;
+		xh = this.hero.getCoords().X();
+		yh = this.hero.getCoords().Y();
+		xl = this.leverORkey.X();
+		yl = this.leverORkey.Y();
+		if (xh == xl && yh == yl) {
+			this.hero.setRep('K');
+		}
+	}
+	
+	public void playLvl2() {
+		Scanner reader = new Scanner(System.in);
+		char key;
+		int unlocked = 0;
+		while (this.getHero().isAlive() && this.getLvl() == 2) {
+			if (this.hero.getRep() == 'K') {
+				if(this.checkANUnlock(unlocked)) unlocked++;
+			}
+			this.printGameState();
+			key = reader.next().charAt(0);
+			this.getHero().moveHero(key, this.getBoard());
+			this.updateBoard();
+			this.catchKey();
+			this.updateBoard();
+			this.moveOgres();
+			this.updateBoard();
+			this.attackOgres();
+			this.updateBoard();
+			if(this.exit()) this.lvl3();
+			if (this.isPlayerHit()) {
+				this.hero.killHero();
+				this.updateBoard();
+				this.printGameState();
+			}
+		}
 	}
 }

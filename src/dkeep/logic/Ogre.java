@@ -31,36 +31,42 @@ public class Ogre extends Enemy{
 		int y = nc.Y();
 		char newpos = board[x][y];
 		
-		return newpos != 'X' && newpos != 'I' && newpos != 'O' && newpos != 'G'
-				&& newpos != '$' && newpos != '*'; 
+		if(x != 0 && y != 0 && newpos != 'X' && newpos != 'I' && newpos != 'O'
+				&& newpos != 'G' && newpos != '$' && newpos != '*') {
+			return true; 
+		}
+		return false;
 	}
 	
-	public void attackMove(char key, char [][] board) {
+	public void moveOgre(char key, char [][] board) {
 		super.moveEnemy(key, board);
-		
-		Coords nc = super.getCoords();
-		
-		do{
-			key = randommov();
-			if (key == 'w') {
-				nc.setCoords(nc.X() - 1, nc.Y());
-				
-			}else if (key == 's') {
-				nc.setCoords(nc.X() + 1, nc.Y());
-				
-			}else if (key == 'a') {
-				nc.setCoords(nc.X(), nc.Y() - 1);
-				
-			}else if (key == 'd') {
-				nc.setCoords(nc.X(), nc.Y() + 1);
-			}
-		}while(!this.validateCMov(board, nc));
-		this.club.setCoords(nc);
-		System.out.println(this.c.X());
-		System.out.println(this.c.Y());
-		System.out.println(this.club.X());
-		System.out.println(this.club.Y());
 	}
+	
+	public void attackOgre(char [][] board) {
+		
+		
+	//TODO: REPENSAR ESTA FUNCAO, ELE TA A ATACAR SMP POR CIMA DO OGRE
+		Coords c = super.getCoords();
+		Coords nc = new Coords(0, 0);
+		char key2; 
+		while(!this.validateCMov(board, nc)){
+			key2 = randommov();
+			if (key2 == 'w') {
+				nc.setCoords(c.X() - 1, c.Y());
+						
+			}else if (key2 == 's') {
+				nc.setCoords(c.X() + 1, c.Y());
+						
+			}else if (key2 == 'a') {
+				nc.setCoords(c.X(), c.Y() - 1);
+						
+			}else if (key2 == 'd') {
+				nc.setCoords(c.X(), c.Y() + 1);
+			}
+		}
+		this.club.setCoords(nc);
+	}
+
 	
 	public Coords getCCoords() {
 		return this.club;
@@ -68,5 +74,9 @@ public class Ogre extends Enemy{
 	
 	public char getCRep() {
 		return this.clubrep;
+	}
+	
+	public void setCRep(char nr) {
+		this.clubrep = nr;
 	}
 }
