@@ -18,8 +18,8 @@ public class Enemy {
 		int y = nc.Y();
 		char newpos = board[x][y];
 		
-		return newpos != 'X' && newpos != 'I' && newpos != 'O' && newpos != 'G'
-				&& newpos != 'K' &&  newpos != 'H' && newpos != '$' && newpos != '*'; 
+		return newpos != 'X' && newpos != 'I' && newpos != 'K' &&  newpos != 'H' 
+				&& newpos != '$' && newpos != '*'; 
 	}
 
 	public void moveEnemy(char key, char [][] board) {

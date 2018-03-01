@@ -2,6 +2,8 @@ package dkeep.logic;
 
 import java.util.*;
 
+//import sun.nio.cs.ext.TIS_620;
+
 public class GameState {
 
 	private char [][] board;
@@ -47,7 +49,7 @@ public class GameState {
 		System.out.print('\n');
 		this.printMatrix(this.board);
 	}
-	
+
 	public void lvl1() {
 		char [][] b = {
 				{'X','X','X','X','X','X','X','X','X','X'},
@@ -99,12 +101,59 @@ public class GameState {
 		this.exits.clear();
 		this.exits.add(ce);
 		Ogre ogr = new Ogre('O', co, cc,'*');
+		this.ogres.add(ogr);
+		Random ogreN = new Random();
+		int n = ogreN.nextInt(3);
+		int rx, ry;
+		int cy;
+		while(n > 0) {
+			rx = ogreN.nextInt(6) + 1;
+			ry = ogreN.nextInt(7) + 1;
+			co = new Coords(rx, ry);
+			if (co.Y() == this.board[0].length - 2) {
+				cy = co.Y() - 1;
+			}else if (co.Y() == 1) {
+				cy = co.Y() + 1;
+			}else {
+				cy = co.Y();
+			}
+			cc = new Coords(co.X() + 1, cy);
+			ogr = new Ogre('O', co, cc,'*');
+			this.ogres.add(ogr);
+			n--;
+		}
 		this.board = b;
 		this.leverORkey = findChar(b, 'k');
 		this.level = 2;
 		this.hero = new Hero('H', ch);
-		this.ogres.add(ogr);
 		this.guards.clear();
+		this.hero.armHero();
+	}
+	
+	public void stunOgres() {
+		Coords c1, c2, c3, c4;
+		if(this.hero.isArmed()) {
+			for (int i = 0; i < this.ogres.size(); i++) {
+				c1 = new Coords(this.ogres.get(i).getCoords().X() + 1
+						, this.ogres.get(i).getCoords().Y());
+				c2 = new Coords(this.ogres.get(i).getCoords().X() - 1, 
+						this.ogres.get(i).getCoords().Y());
+				c3 = new Coords(this.ogres.get(i).getCoords().X(),
+						this.ogres.get(i).getCoords().Y() + 1);
+				c4 = new Coords(this.ogres.get(i).getCoords().X(), 
+						this.ogres.get(i).getCoords().Y() + 1);
+				if(this.hero.getCoords().equal(c1) || this.hero.getCoords().equal(c2) ||
+						this.hero.getCoords().equal(c3) || this.hero.getCoords().equal(c4)) {
+					this.ogres.get(i).stunMe();
+				}
+			}
+		}
+	}
+	
+	public void wakeOgres() {
+		for(int i = 0; i < this.ogres.size(); i++) {
+			this.ogres.get(i).wakeOgre();
+		}
 	}
 	
 	public void lvl3() {
@@ -145,6 +194,7 @@ public class GameState {
 		Coords cc;
 		boolean ogreOnKey = false;
 		boolean clubOnKey = false;
+		boolean someoneOnKey = false;
 		this.board[ch.X()][ch.Y()] = this.hero.getRep();
 		int i = 0;
 		for (i = 0; i < this.guards.size(); i++) {
@@ -158,24 +208,31 @@ public class GameState {
 					this.hero.getRep() != 'K');
 			if (ogreOnKey) {
 				this.ogres.get(i).setRep('$');
+				someoneOnKey = true;
 			}else {
-				this.ogres.get(i).setRep('O');
+				if(this.ogres.get(i).getWoke() == 'Y') {
+					this.ogres.get(i).setRep('O');
+				}else {
+					this.ogres.get(i).setRep('8');
+				}
 			}
 			cc = this.ogres.get(i).getCCoords();
 			clubOnKey = clubOnKey || (this.ogres.get(i).getCCoords().equal(this.leverORkey) &&
 					this.hero.getRep() != 'K');
 			if(clubOnKey) {
 				this.ogres.get(i).setCRep('$');
+				someoneOnKey = true;
 			}else {
 				this.ogres.get(i).setCRep('*');
 			}
-			
 			this.board[cg.X()][cg.Y()] = this.ogres.get(i).getRep();
 			this.board[cc.X()][cc.Y()] = this.ogres.get(i).getCRep();
 			//Fazer uma seq, de || com o ogreOnKey verificando se a entidade esta em cima da chave
+			ogreOnKey = false;
+			clubOnKey = false;
 		}
 		
-		if (this.hero.getRep() != 'K' && !ogreOnKey && !clubOnKey) {
+		if (this.hero.getRep() != 'K' && !someoneOnKey) {
 			this.board[this.leverORkey.X()][this.leverORkey.Y()] = 'k';
 		} 
 		
@@ -328,9 +385,12 @@ public class GameState {
 			if (this.hero.getRep() == 'K') {
 				if(this.checkANUnlock(unlocked)) unlocked++;
 			}
+			this.wakeOgres();
+			this.updateBoard();
 			this.printGameState();
 			key = reader.next().charAt(0);
 			this.getHero().moveHero(key, this.getBoard());
+			this.stunOgres();
 			this.updateBoard();
 			this.catchKey();
 			this.updateBoard();

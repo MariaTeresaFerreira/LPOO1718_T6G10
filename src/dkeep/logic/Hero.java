@@ -47,6 +47,7 @@ public class Hero {
 	
 	public void armHero() {
 		this.armed = true;
+		this.setRep('A');
 	}
 	
 	public void killHero() {
@@ -63,6 +64,10 @@ public class Hero {
 	
 	public boolean isAlive() {
 		return this.alive;
+	}
+	
+	public boolean isArmed() {
+		return this.armed;
 	}
 	
 	public boolean guardScan(char [][] board) {
