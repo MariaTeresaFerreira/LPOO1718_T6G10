@@ -171,6 +171,22 @@ public class GameState {
 		}
 	}
 	
+	public GameState(char [][] board, LinkedList<Coords> exits,LinkedList<Ogre> ogres, LinkedList<Guard> guards) {
+		this.board = board;
+		this.guards = new LinkedList<Guard>();
+		this.guards = guards;
+		this.ogres = new LinkedList<Ogre>();
+		this.ogres = ogres;
+		this.exits = new LinkedList<Coords>();
+		this.exits = exits;
+		this.leverORkey = findChar(board, 'k');
+		Coords ch = findChar(board, 'H');
+		this.hero = new Hero('H', ch);
+		
+		
+		
+	}
+	
 	public void clearBoard() {
 		
 		char cell;

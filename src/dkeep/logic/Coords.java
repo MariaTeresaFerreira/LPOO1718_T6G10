@@ -14,6 +14,11 @@ public class Coords {
 		return	this.x == nc.X() && this.y == nc.Y();
 	}
 	
+	public boolean equals(Object t) {
+		return t != null && t instanceof Coords && ((Coords) t).X() == this.x && 
+				((Coords) t).Y() == this.y;
+	}
+	
 	public int X() {
 		return this.x;
 	}
