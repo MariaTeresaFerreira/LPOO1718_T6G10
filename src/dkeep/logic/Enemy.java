@@ -4,7 +4,7 @@ public class Enemy {
 	
 	protected char rep;
 	protected Coords c;
-	int status;
+	protected Integer status;
 	
 	public Enemy(char nrep, Coords coords) {
 		this.rep = nrep;
@@ -19,7 +19,7 @@ public class Enemy {
 		char newpos = board[x][y];
 		
 		return newpos != 'X' && newpos != 'I' && newpos != 'K' &&  newpos != 'H' 
-				&& newpos != '$' && newpos != '*'; 
+				&& newpos != '$' && newpos != '*' && newpos != 'S'; 
 	}
 
 	public void moveEnemy(char key, char [][] board) {

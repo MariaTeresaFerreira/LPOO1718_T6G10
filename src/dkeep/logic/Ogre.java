@@ -6,13 +6,12 @@ public class Ogre extends Enemy{
 
 	private Coords club;
 	private char clubrep;
-	private char woke;
 	
 	public Ogre(char nrep, Coords coords, Coords ccoords, char clubr) {
 		super(nrep, coords);
 		this.clubrep = clubr;
 		this.club = ccoords;
-		this.woke = 'Y';
+		super.status = 0;
 	}
 	
 	public char randommov() {
@@ -42,31 +41,31 @@ public class Ogre extends Enemy{
 	
 	public void moveOgre(char key, char [][] board) {
 		
-		if(this.woke == 'Y') {
+		if(super.status.intValue() == 0) {
 			super.moveEnemy(key, board);
 		}
 	}
 	
 	public void wakeOgre() {
 		
-		if(this.woke == '2') {
-			this.woke = '1';
-		}else if (this.woke == '1') {
-			this.woke = '0';
-		}else if (this.woke == '0') {
-			this.woke = 'Y';
+		if(super.status.intValue() == 3) {
+			super.status = 2;
+		}else if (super.status.intValue() == 2) {
+			super.status = 1;
+		}else if (super.status.intValue() == 1) {
+			super.status = 0;
 			this.setRep('O');
 		}
 	}
 	
 	public void stunMe() {
-		this.woke = '2';
+		super.status = 3;
 		this.setRep('8');
 	}
 	
 	public void attackOgre(char [][] board) {
 		
-		if (this.woke == 'Y') {
+		if (super.status.intValue() == 0) {
 			Coords c = super.getCoords();
 			Coords nc = new Coords(0, 0);
 			char key2; 
@@ -89,8 +88,8 @@ public class Ogre extends Enemy{
 		}
 	}
 	
-	public char getWoke() {
-		return this.woke;
+	public int getWoke() {
+		return super.status.intValue();
 	}
 	
 	public Coords getCCoords() {

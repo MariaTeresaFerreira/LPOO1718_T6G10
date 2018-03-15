@@ -210,7 +210,7 @@ public class GameState {
 				this.ogres.get(i).setRep('$');
 				someoneOnKey = true;
 			}else {
-				if(this.ogres.get(i).getWoke() == 'Y') {
+				if(this.ogres.get(i).getWoke() == 0) {
 					this.ogres.get(i).setRep('O');
 				}else {
 					this.ogres.get(i).setRep('8');

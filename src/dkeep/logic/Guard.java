@@ -5,7 +5,7 @@ import java.util.*;
 public class Guard extends Enemy {
 	
 	private String route;
-	private String movs;
+	private Integer patrolCount;
 	private char persona;
 	
 	public char generatePersona() {
@@ -26,31 +26,39 @@ public class Guard extends Enemy {
 	public Guard(String nroute, char nrep, Coords coord) {
 		super(nrep, coord);
 		this.route = nroute;
-		this.movs = "";
-		this.persona = this.generatePersona();
+		this.patrolCount = 23;
+		this.persona = 'd';//this.generatePersona();
+		super.status = 2;
 	}
 	
-	public void getNextMov() {
-		
-		int i = this.movs.length();
-		this.movs += this.route.substring(i, i+1);
-		
-	}
-	
-	public void nextMov() {
-		
-		if (movs == "" || movs.length() == route.length()) {
-			this.movs = this.route.substring(0, 1);
+	public char getNextMov() {
+		String c = "";
+		if(super.status.intValue() == 0) {
+			this.patrolCount ++;
+			if(this.patrolCount.intValue() == this.route.length()) {
+				this.patrolCount = 0;
+			}
+			c += this.route.charAt(this.patrolCount - 1);
+		}else if (super.status.intValue() == 2) {
+			this.patrolCount--;
+			if(this.patrolCount.intValue() <= 0) {
+				this.patrolCount = this.route.length() - 2;
+			}
+			c += this.route.charAt(this.patrolCount + 1);
+			this.invertKey(c);
 		}else {
-			this.getNextMov();
+			c += 'a';
 		}
+		
+		System.out.println(c);
+		return c.charAt(0);
 		
 	}
 	
 	public void moveGuard(char board [][]) {
 		
-		this.nextMov();
-		char key = this.movs.charAt(this.movs.length() - 1);
+		this.updateGuard();
+		char key = this.getNextMov();
 		super.moveEnemy(key, board);
 	}
 	
@@ -70,21 +78,83 @@ public class Guard extends Enemy {
 
 
 	public void invertPatrol(){
-		String aux1 = "";
-		String key, aux2;
-		for (int i = 1; i <= this.route.length(); i++){
-			key = this.route.substring(this.route.length() - i, this.route.length() - (i - 1));
-			System.out.println("ANTES: " + key + key.length());
-			System.out.println(key == "d");
-			aux2 = this.invertKey(key);
-			System.out.println("DEPOIS: " + aux2);
-			aux1 += aux2;
-		}
+//		String aux1 = "";
+//		String key, aux2;
+//		for (int i = 1; i <= this.route.length(); i++){
+//			key = this.route.substring(this.route.length() - i, this.route.length() - (i - 1));
+//			System.out.println("ANTES: " + key + key.length());
+//			System.out.println(key == "d");
+//			aux2 = this.invertKey(key);
+//			System.out.println("DEPOIS: " + aux2);
+//			aux1 += aux2;
+//		}
+//
+//		this.route = aux1;
 
-		this.route = aux1;
-
+		System.out.println("inverteu");
 	}
 	
+	public boolean randomEvent () {
+		
+		Random randomno = new Random();
+		int n = randomno.nextInt(100);
+		if(n >= 0 && n < 40 ) {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	public boolean wakeUp() {
+		Random randomno = new Random();
+		int n = randomno.nextInt(2);
+		if (n == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void eventSuspicious() {
+		if (this.randomEvent()) {
+			if(super.status.intValue() == 2) {
+				super.status = 0;
+				System.out.println("DESVERTOU");
+			}else {
+				super.status = 2;
+				System.out.println("REVERTOU");
+			}
+		}
+	}
+	
+	public void eventDrunken() {
+		if(this.randomEvent() || (super.status.intValue() == 1 && this.wakeUp())) {
+			if(super.status.intValue() == 0 || super.status.intValue() == 2) {
+				super.status = 1;
+				System.out.println("bebedoso dormidoso");
+			}else if (super.status == 1) {
+				if(this.wakeUp()) {//Acordar e andar para a frente
+					if(this.randomEvent()) {
+						this.invertPatrol();
+						super.status = 2;
+						System.out.println("bebedoso dormidoso got woke e ta de marchatras");
+					}
+					else {
+						super.status = 0;
+						System.out.println("bebedoso dormidoso got woke e ta de frente");
+					}
+				}
+			}
+		}		
+	}
+	
+	public void updateGuard() {
+		if(this.persona == 's') {
+			this.eventSuspicious();
+		}else if(this.persona == 'd') {
+			this.eventDrunken();
+		}
+		
+	}
 	
 	
 }
