@@ -262,7 +262,7 @@ public class GameState {
 		yh = this.hero.getCoords().Y();
 		xl = this.leverORkey.X();
 		yl = this.leverORkey.Y();
-		if (xh == xl && yl == yh && this.level == 1) {
+		if (xh == xl && yl == yh) {
 			for (int i = 0; i < this.board.length; i++) {
 				for(int j = 0; j < this.board[0].length; j++) {
 					if (this.board[i][j] == 'I') {
@@ -313,6 +313,14 @@ public class GameState {
 	
 	public char [][] getBoard(){
 		return this.board;
+	}
+	
+	public Coords getLeverORkey() {
+		return this.leverORkey;
+	}
+	
+	public LinkedList<Coords> getExits(){
+		return this.exits;
 	}
 	
 	public void playLvl1() {
