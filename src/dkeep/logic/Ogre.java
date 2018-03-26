@@ -88,6 +88,45 @@ public class Ogre extends Enemy{
 		}
 	}
 	
+	/*
+	 * NOT TO BE IMPLEMENTED:
+	 * WE CONSIDER THIS FUCNTIONALLITY UNNECESSARY,
+	 * IF THE CLIENT SO CHOOSES CAN BE IMPLEMENTED AS THE GUARD SCAN IS
+	 * YET IT IS CALLED FROM THE OGRE OBJECT (LIKE ATTACKOGRE OR MOVEOGRE)
+	 * */
+	public boolean ogreScan(char [][] board) {
+		int x0, x1, y0, y1;
+		x0 = this.c.X() - 1;
+		x1 = this.c.X() + 1;
+		y0 = this.c.Y() - 1;
+		y1 = this.c.Y() + 1;
+		if(x0 > 0) {
+			if ( board[ x0 ][ this.c.Y() ] == 'H' ||
+					board[ x0 ][ this.c.Y() ] == 'K' ||
+					board[ x0 ][ this.c.Y() ] == 'A') return true; 
+		}
+		
+		if (x1 < board.length) {
+			if ( board[ x1 ][ this.c.Y() ] == 'H' ||
+					board[ x1 ][ this.c.Y() ] == 'K' ||
+					board[ x1 ][ this.c.Y() ] == 'A') return true;
+		}
+		
+		if (y0 > 0) {
+			if(board[ this.c.X() ][ y0 ] == 'H' ||
+					board[ this.c.X() ][ y0 ] == 'K' ||
+					board[ this.c.X() ][ y0 ] == 'A') return true;
+		}
+		
+		if (y1 < board[0].length) {
+			if( board[ this.c.X() ][ y1 ] == 'H' ||
+					board[ this.c.X() ][ y1 ] == 'K' ||
+					board[ this.c.X() ][ y1 ] == 'A') return true;
+		}
+		
+		return false;
+	}
+	
 	public int getWoke() {
 		return super.status.intValue();
 	}
