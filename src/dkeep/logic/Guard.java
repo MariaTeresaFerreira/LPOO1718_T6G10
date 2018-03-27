@@ -26,32 +26,17 @@ public class Guard extends Enemy {
 	public Guard(String nroute, char nrep, Coords coord) {
 		super(nrep, coord);
 		this.route = nroute;
-		this.patrolCount = 23;
-		this.persona = 'd';//this.generatePersona();
-		super.status = 2;
+		this.patrolCount = 0;
+		this.persona = this.generatePersona();
+		super.status = 0;
 	}
 	
 	public char getNextMov() {
-		String c = "";
-		if(super.status.intValue() == 0) {
-			this.patrolCount ++;
-			if(this.patrolCount.intValue() == this.route.length()) {
-				this.patrolCount = 0;
-			}
-			c += this.route.charAt(this.patrolCount - 1);
-		}else if (super.status.intValue() == 2) {
-			this.patrolCount--;
-			if(this.patrolCount.intValue() <= 0) {
-				this.patrolCount = this.route.length() - 2;
-			}
-			c += this.route.charAt(this.patrolCount + 1);
-			this.invertKey(c);
-		}else {
-			c += 'a';
-		}
-		
-		System.out.println(c);
-		return c.charAt(0);
+		if (super.status == 1) return ' ';
+		char c = this.route.charAt(this.patrolCount.intValue());
+		this.patrolCount++;
+		if (this.patrolCount.intValue() == this.route.length()) this.patrolCount = 0;
+		return c;
 		
 	}
 	
@@ -78,20 +63,23 @@ public class Guard extends Enemy {
 
 
 	public void invertPatrol(){
-//		String aux1 = "";
-//		String key, aux2;
-//		for (int i = 1; i <= this.route.length(); i++){
-//			key = this.route.substring(this.route.length() - i, this.route.length() - (i - 1));
-//			System.out.println("ANTES: " + key + key.length());
-//			System.out.println(key == "d");
-//			aux2 = this.invertKey(key);
-//			System.out.println("DEPOIS: " + aux2);
-//			aux1 += aux2;
-//		}
-//
-//		this.route = aux1;
+		String aux1 = "";
+		String key, aux2;
+		for (int i = 1; i <= this.route.length(); i++){
+			key = this.route.substring(this.route.length() - i, this.route.length() - (i - 1));
+			aux2 = this.invertKey(key);
+			aux1 += aux2;
+		}
 
-		System.out.println("inverteu");
+		this.route = aux1;
+		 
+	}
+	
+	public void invertRoute(){
+		int x = this.patrolCount.intValue();
+		this.patrolCount = this.route.length() - x;
+		if (this.patrolCount.intValue() == this.route.length()) this.patrolCount = 0;
+		this.invertPatrol();
 	}
 	
 	public boolean randomEvent () {
@@ -116,13 +104,7 @@ public class Guard extends Enemy {
 	
 	public void eventSuspicious() {
 		if (this.randomEvent()) {
-			if(super.status.intValue() == 2) {
-				super.status = 0;
-				System.out.println("DESVERTOU");
-			}else {
-				super.status = 2;
-				System.out.println("REVERTOU");
-			}
+			this.invertRoute();
 		}
 	}
 	
@@ -130,18 +112,14 @@ public class Guard extends Enemy {
 		if(this.randomEvent() || (super.status.intValue() == 1 && this.wakeUp())) {
 			if(super.status.intValue() == 0 || super.status.intValue() == 2) {
 				super.status = 1;
-				System.out.println("bebedoso dormidoso");
+				this.setRep('g');
 			}else if (super.status == 1) {
-				if(this.wakeUp()) {//Acordar e andar para a frente
+				if(this.wakeUp()) {
 					if(this.randomEvent()) {
-						this.invertPatrol();
-						super.status = 2;
-						System.out.println("bebedoso dormidoso got woke e ta de marchatras");
+						this.invertRoute();
 					}
-					else {
-						super.status = 0;
-						System.out.println("bebedoso dormidoso got woke e ta de frente");
-					}
+					super.status = 0;
+					this.setRep('G');
 				}
 			}
 		}		
