@@ -69,9 +69,9 @@ public class TestTask2 {
 		//Test 4 --> Hero opens door
 		assertEquals('S', g.getBoard()[3][0]);
 		g.getHero().moveHero('a', g.getBoard());
-		if(g.exit()) g.lvl3();
+		if(g.exit()) g.gg();
 		//Test 5 --> Hero wins :P
-		assertEquals(3, g.getLvl());
-	}
+		assertEquals(0, g.getLvl());
+	} 
 
 }

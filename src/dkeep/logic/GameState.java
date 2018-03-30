@@ -156,8 +156,9 @@ public class GameState {
 		}
 	}
 	
-	public void lvl3() {
-		this.level = 3;
+	public void gg() {
+		this.level = 0;
+		System.out.println("GG WP");
 	}
 	
 	public GameState(int level) {
@@ -322,28 +323,7 @@ public class GameState {
 	public LinkedList<Coords> getExits(){
 		return this.exits;
 	}
-	
-	public void playLvl1() {
 		
-		Scanner reader = new Scanner(System.in);
-		char key;
-		while(this.getHero().isAlive() && this.getLvl() == 1) {
-			this.printGameState();
-			key = reader.next().charAt(0);
-			this.getHero().moveHero(key, this.getBoard());
-			this.updateBoard();
-			this.moveGuards();
-			this.updateBoard();
-			if(this.getHero().guardScan(this.getBoard())) {
-				this.getHero().killHero();
-			}
-			this.unlockAll();
-			if(this.exit()) this.lvl2();
-			this.updateBoard();
-						
-		}
-	}
-	
 	public boolean isPlayerHit() {
 		int xh = this.hero.getCoords().X();
 		int yh = this.hero.getCoords().Y();
@@ -401,33 +381,5 @@ public class GameState {
 		}
 	}
 	
-	public void playLvl2() {
-		Scanner reader = new Scanner(System.in);
-		char key;
-		int unlocked = 0;
-		while (this.getHero().isAlive() && this.getLvl() == 2) {
-			if (this.hero.getRep() == 'K') {
-				if(this.checkANUnlock(unlocked)) unlocked++;
-			}
-			this.wakeOgres();
-			this.updateBoard();
-			this.printGameState();
-			key = reader.next().charAt(0);
-			this.getHero().moveHero(key, this.getBoard());
-			this.stunOgres();
-			this.updateBoard();
-			this.catchKey();
-			this.updateBoard();
-			this.moveOgres();
-			this.updateBoard();
-			this.attackOgres();
-			this.updateBoard();
-			if(this.exit()) this.lvl3();
-			if (this.isPlayerHit()) {
-				this.hero.killHero();
-				this.updateBoard();
-				this.printGameState();
-			}
-		}
-	}
+	
 }
