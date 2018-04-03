@@ -36,7 +36,7 @@ public class TestTask1 {
 		//Test 3 --> Read Name
 		LinkedList<Guard> gds = new LinkedList<Guard>();
 		Coords cg = new Coords(1, 3);
-		Guard e = new Guard("", 'G', cg);
+		Guard e = new Guard("", 'G', cg, 's');
 		gds.add(e);
 		LinkedList<Coords> ex = new LinkedList<Coords>();
 		LinkedList<Ogre> ogs = new LinkedList<Ogre>();
