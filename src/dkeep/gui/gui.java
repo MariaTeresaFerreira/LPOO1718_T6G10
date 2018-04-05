@@ -21,7 +21,11 @@ public class gui {
 
 	private JFrame frame;
 	private JTextField ogresNumber;
-
+	
+	private GameState g;
+	private JTextArea textArea;
+	private int no;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -79,18 +83,59 @@ public class gui {
 
 		// Movement buttons
 		JButton btnUp = new JButton("Up");
+		btnUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				char key = 'w';
+				if(g.getLvl() == 1) {
+					playLvl1GUI(key, no);
+				}else if (g.getLvl() == 2) {
+					playLvl2GUI(key);
+				}
+			}
+		});
 		btnUp.setBounds(585, 165, 117, 29);
 		frame.getContentPane().add(btnUp);
 
 		JButton btnDown = new JButton("Down");
+		btnDown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				char key = 's';
+				if(g.getLvl() == 1) {
+					playLvl1GUI(key, no);
+				}else if (g.getLvl() == 2) {
+					playLvl2GUI(key);
+				}
+				
+			}
+		});
 		btnDown.setBounds(585, 247, 117, 29);
 		frame.getContentPane().add(btnDown);
 
 		JButton btnLeft = new JButton("Left");
+		btnLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				char key = 'a';
+				if(g.getLvl() == 1) {
+					playLvl1GUI(key, no);
+				}else if (g.getLvl() == 2) {
+					playLvl2GUI(key);
+				}
+			}
+		});
 		btnLeft.setBounds(530, 206, 117, 29);
 		frame.getContentPane().add(btnLeft);
 
 		JButton btnRight = new JButton("Right");
+		btnRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				char key = 'd';
+				if(g.getLvl() == 1) {
+					playLvl1GUI(key, no);
+				}else if (g.getLvl() == 2) {
+					playLvl2GUI(key);
+				}
+			}
+		});
 		btnRight.setBounds(642, 206, 117, 29);
 		frame.getContentPane().add(btnRight);
 
@@ -105,7 +150,7 @@ public class gui {
 		frame.getContentPane().add(btnExit);
 
 		//show game
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setFont(new Font("Courier New", Font.PLAIN, 20));
 		textArea.setBounds(23, 108, 487, 306);
 		frame.getContentPane().add(textArea);
@@ -121,11 +166,11 @@ public class gui {
 			public void actionPerformed(ActionEvent e) {
 				
 				boolean inputIsValid = false;
-				char guardPer;
-				int ogreNum = 0;
+				char guardPer = ' ';
+				no = 0; // number os ogres
 				
 				try {
-					ogreNum = Integer.parseInt(ogresNumber.getText());
+					no = Integer.parseInt(ogresNumber.getText());
 				} catch (NumberFormatException e1){
 					message.setText("The input is not valid.");
 				}catch (NullPointerException e1) {
@@ -153,26 +198,76 @@ public class gui {
 					break;
 				}
 				
-				if(ogreNum < 1 || ogreNum > 4) {
+				if(no < 1 || no > 4 || guardPer == ' ') {
 					inputIsValid = false;
 				}
 				
 				if(!inputIsValid) {
 					message.setText("The input is not valid.");
 				}else {
-					message.setText("Level 1");
-					
+					g = new GameState(1, guardPer, no);
+					message.setText("Level " + g.getLvl());
+					g.printMatrixGUI(g.getBoard(), textArea);
+//					
+//					g.playLvl1(true, textArea);
+//					if(g.getHero().isAlive()) g.playLvl2(true, textArea);
+//					if (!g.getHero().isAlive()) {
+//						g.printGameState(true, textArea);
+//						
+//						message.setText("GG");
+//					}
 					
 				}
 
-				
 			}
 		});
 		btnNewGame.setBounds(585, 68, 117, 29);
 		frame.getContentPane().add(btnNewGame);
 
-
-
-
 	}
+	
+	public void playLvl1GUI(char key, int no) {
+		
+		g.getHero().moveHero(key, g.getBoard());
+		g.updateBoard();
+		g.moveGuards();
+		g.updateBoard();
+		if(g.getHero().guardScan(g.getBoard())) {
+			g.getHero().killHero();
+			
+		}
+		g.unlockAll();
+		if(g.exit()) g.lvl2(no);
+		g.updateBoard();
+		g.printMatrixGUI(g.getBoard(), textArea);
+	}
+	
+	public void playLvl2GUI(char key) {
+		
+		int unlocked = 0;
+		if (g.getHero().getRep() == 'K') {
+			if(g.checkANUnlock(unlocked)) unlocked++;
+		}
+		g.wakeOgres();
+		g.updateBoard();
+		g.printGameState(true, textArea);
+		g.getHero().moveHero(key, g.getBoard());
+		g.stunOgres();
+		g.updateBoard();
+		g.catchKey();
+		g.updateBoard();
+		g.moveOgres();
+		g.updateBoard();
+		g.attackOgres();
+		g.updateBoard();
+		if(g.exit()) g.gg();
+		if (g.isPlayerHit()) {
+			g.getHero().killHero();
+			g.updateBoard();
+			g.printGameState(true, textArea);
+		}
+		
+		
+	}
+	
 }

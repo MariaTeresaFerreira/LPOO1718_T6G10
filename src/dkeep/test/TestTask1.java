@@ -70,7 +70,7 @@ public class TestTask1 {
 		assertEquals('S', g.getBoard()[e1.X()][e1.Y()]);
 		assertEquals('S', g.getBoard()[e2.X()][e2.Y()]);
 		g.getHero().moveHero('a', g.getBoard());
-		if(g.exit()) g.lvl2();
+		if(g.exit()) g.lvl2(3);
 		//Test 6 --> Hero moves into the open Dungeon exit doors and progresses into the Keep
 		assertEquals(2, g.getLvl());
 			
