@@ -40,6 +40,10 @@ public class Guard extends Enemy {
 		
 	}
 	
+	public int getPatrolCount() {
+		return this.patrolCount.intValue();
+	}
+	
 	public void moveGuard(char board [][]) {
 		
 		this.updateGuard();
@@ -77,6 +81,7 @@ public class Guard extends Enemy {
 	
 	public void invertRoute(){
 		int x = this.patrolCount.intValue();
+		if (x == 0) x = 1;
 		this.patrolCount = this.route.length() - x;
 		if (this.patrolCount.intValue() == this.route.length()) this.patrolCount = 0;
 		this.invertPatrol();
@@ -132,6 +137,18 @@ public class Guard extends Enemy {
 			this.eventDrunken();
 		}
 		
+	}
+	
+	public void setPersona(char p) {
+		this.persona = p;
+	}
+	
+	public String getRoute() {
+		return this.route;
+	}
+	
+	public int getStatus() {
+		return super.status.intValue();
 	}
 	
 	

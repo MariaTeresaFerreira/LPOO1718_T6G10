@@ -183,6 +183,11 @@ public class GameState {
 		this.leverORkey = findChar(board, 'k');
 		Coords ch = findChar(board, 'H');
 		this.hero = new Hero('H', ch);
+		if (ch.X() == -1) {
+			ch = findChar(board, 'A');
+			this.hero = new Hero('A', ch);
+			this.hero.armHero();
+		}
 		
 		
 		
@@ -323,6 +328,14 @@ public class GameState {
 	public LinkedList<Coords> getExits(){
 		return this.exits;
 	}
+	
+	public LinkedList<Ogre> getOgres(){
+		return this.ogres;
+	}
+	
+	public LinkedList<Guard> getGuards(){
+		return this.guards;
+	}
 		
 	public boolean isPlayerHit() {
 		int xh = this.hero.getCoords().X();
@@ -337,7 +350,6 @@ public class GameState {
 	}
 	
 	public boolean checkANUnlock(int x) {
-		/*if(this.getHero().getCoords().)*/
 		int xh, yh, xe, ye;
 		xh = this.hero.getCoords().X();
 		yh = this.hero.getCoords().Y();
