@@ -3,16 +3,17 @@ package dkeep.cli;
 import java.util.*;
 import dkeep.logic.*;
 
+import javax.swing.JTextArea;
+
 public class Main {
 	
-	
-	
 	public static void main(String [] args) {
-		GameState g = new GameState(1, 'd');
-		g.playLvl1();
-		if(g.getHero().isAlive()) g.playLvl2();
+		JTextArea x = new JTextArea();
+		GameState g = new GameState(1, 'd', 3);
+		g.playLvl1(false, x);
+		if(g.getHero().isAlive()) g.playLvl2(false, x);
 		if (!g.getHero().isAlive()) {
-			g.printGameState();
+			g.printGameState(false, x);
 			System.out.println("GG EZ");
 		}
 	}

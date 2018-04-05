@@ -1,6 +1,7 @@
 package dkeep.logic;
 
 import java.util.*;
+import javax.swing.JTextArea;
 
 //import sun.nio.cs.ext.TIS_620;
 
@@ -45,9 +46,14 @@ public class GameState {
 		}
 	}
 
-	public void printGameState() {
-		System.out.print('\n');
-		this.printMatrix(this.board);
+	public void printGameState(boolean gui, JTextArea t) {
+		if(gui) {
+			this.printMatrixGUI(this.board, t);
+		}else {
+			System.out.print('\n');
+			this.printMatrix(this.board);
+		}
+		
 	}
 
 	public void lvl1(char p) {
@@ -80,7 +86,7 @@ public class GameState {
 		this.guards.add(guard);
 	}
 
-	public void lvl2() {
+	public void lvl2(int no) {
 
 		char [][] b = {
 				{'X','X','X','X','X','X','X','X','X'},
@@ -103,7 +109,7 @@ public class GameState {
 		Ogre ogr = new Ogre('O', co, cc,'*');
 		this.ogres.add(ogr);
 		Random ogreN = new Random();
-		int n = ogreN.nextInt(3);
+		int n = ogreN.nextInt(no);
 		int rx, ry;
 		int cy;
 		while(n > 0) {
@@ -161,14 +167,14 @@ public class GameState {
 		System.out.println("GG WP");
 	}
 
-	public GameState(int level, char p) {
+	public GameState(int level, char p, int no) {
 		this.guards = new LinkedList<Guard>();
 		this.ogres = new LinkedList<Ogre>();
 		this.exits = new LinkedList<Coords>();
 		if (level == 1) {
 			this.lvl1(p);
 		}else if (level == 2) {
-			this.lvl2();
+			this.lvl2(no);
 		}
 	}
 
@@ -391,12 +397,12 @@ public class GameState {
 		}
 	}
 
-	public void playLvl1() {
+	public void playLvl1(boolean gui, JTextArea t) {
 
 		Scanner reader = new Scanner(System.in);
 		char key;
 		while(this.getHero().isAlive() && this.getLvl() == 1) {
-			this.printGameState();
+			this.printGameState(gui, t);
 			key = reader.next().charAt(0);
 			this.getHero().moveHero(key, this.getBoard());
 			this.updateBoard();
@@ -406,13 +412,13 @@ public class GameState {
 				this.getHero().killHero();
 			}
 			this.unlockAll();
-			if(this.exit()) this.lvl2();
+			if(this.exit()) this.lvl2(3); // 3 ogres default for console
 			this.updateBoard();
 
 		}
 	}
 
-	public void playLvl2() {
+	public void playLvl2(boolean gui, JTextArea t) {
 		Scanner reader = new Scanner(System.in);
 		char key;
 		int unlocked = 0;
@@ -422,7 +428,7 @@ public class GameState {
 			}
 			this.wakeOgres();
 			this.updateBoard();
-			this.printGameState();
+			this.printGameState(gui, t);
 			key = reader.next().charAt(0);
 			this.getHero().moveHero(key, this.getBoard());
 			this.stunOgres();
@@ -437,9 +443,38 @@ public class GameState {
 			if (this.isPlayerHit()) {
 				this.getHero().killHero();
 				this.updateBoard();
-				this.printGameState();
+				this.printGameState(gui, t);
 			}
 		}
+	}
+	
+	public String arrayToString (char [] anArray) {
+		String s = new String();
+		
+		for(int i = 0; i < anArray.length; i++) {
+			s += anArray[i];
+		}
+		return s;
+	}
+	
+	
+	public String matrixToString(char [][] aMatrix) {
+		
+		String s = "";
+		
+		for(int i = 0; i < aMatrix.length; i++) {
+			if(i > 0)	s += "\n";
+			s += arrayToString(aMatrix[i]);
+		}
+		return s;
+		
+	}
+	
+	public void printMatrixGUI(char [][] aMatrix, JTextArea t) {
+		
+		String s = matrixToString(aMatrix);
+		t.setText(s);
+		
 	}
 
 
