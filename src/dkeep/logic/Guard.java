@@ -23,11 +23,12 @@ public class Guard extends Enemy {
 		return ret;
 	}
 	
-	public Guard(String nroute, char nrep, Coords coord) {
+	public Guard(String nroute, char nrep, Coords coord, char p) {
 		super(nrep, coord);
 		this.route = nroute;
 		this.patrolCount = 0;
-		this.persona = this.generatePersona();
+		//this.persona = this.generatePersona();
+		this.persona = p;
 		super.status = 0;
 	}
 	

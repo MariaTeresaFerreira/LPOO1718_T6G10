@@ -66,8 +66,7 @@ public class TestTask4 {
 		LinkedList<Ogre> ogs = new LinkedList<Ogre>();
 		Coords cg = new Coords(2, 2);
 		String route = "wasd";
-		Guard og = new Guard(route, 'G', cg);
-		og.setPersona('r'); //ROOKIE
+		Guard og = new Guard(route, 'G', cg, 'r'); //ROOKIE
 		gds.add(og);
 		int i = 0, j = 0;
 		GameState g = new GameState(mapRoutes, ex, ogs, gds);
@@ -96,8 +95,7 @@ public class TestTask4 {
 		LinkedList<Ogre> ogs = new LinkedList<Ogre>();
 		Coords cg = new Coords(2, 2);
 		String route1 = "wasd", route2 = "wasd";
-		Guard og = new Guard(route1, 'G', cg);
-		og.setPersona('s');//SUSPICIOUS 
+		Guard og = new Guard(route1, 'G', cg, 's');//SUSPICIOUS 
 		gds.add(og);
 		GameState g = new GameState(mapRoutes, ex, ogs, gds);
 		boolean invert = false, revert = false;
@@ -126,8 +124,7 @@ public class TestTask4 {
 		LinkedList<Ogre> ogs = new LinkedList<Ogre>();
 		Coords cg = new Coords(2, 2);
 		String route1 = "wasd", route2 = "wasd";
-		Guard og = new Guard(route1, 'G', cg);
-		og.setPersona('d');//DRUNKEN 
+		Guard og = new Guard(route1, 'G', cg, 'd');//DRUNKEN 
 		gds.add(og);
 		GameState g = new GameState(mapRoutes, ex, ogs, gds);
 		boolean invert = false, revert = false, asleep = false;

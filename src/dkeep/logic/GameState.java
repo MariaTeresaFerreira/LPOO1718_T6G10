@@ -13,14 +13,14 @@ public class GameState {
 	private LinkedList<Guard> guards;
 	private LinkedList<Ogre> ogres;
 	private LinkedList<Coords> exits;
-	
-	
+
+
 	public int getLvl() {
 		return this.level;
 	}
-	
+
 	public Coords findChar(char board[][], char c) {
-		
+
 		Coords b = new Coords(-1, -1);
 		for(int i = 0; i < board.length; i++)
 			for(int j = 0; j < board[i].length; j++)
@@ -29,7 +29,7 @@ public class GameState {
 				}
 		return b;
 	}
-	
+
 	public void printArray(char[] anArray) {
 		for (int i = 0; i < anArray.length; i++) {
 			if (i > 0) System.out.print(" ");
@@ -44,13 +44,13 @@ public class GameState {
 			printArray(aMatrix[i]);
 		}
 	}
-	
+
 	public void printGameState() {
 		System.out.print('\n');
 		this.printMatrix(this.board);
 	}
 
-	public void lvl1() {
+	public void lvl1(char p) {
 		char [][] b = {
 				{'X','X','X','X','X','X','X','X','X','X'},
 				{'X','H',' ',' ','I',' ','X',' ','G','X'},
@@ -63,7 +63,7 @@ public class GameState {
 				{'X',' ','I',' ','I',' ','X','k',' ','X'},
 				{'X','X','X','X','X','X','X','X','X','X'}
 		};
-		
+
 		Coords ch = findChar(b, 'H');
 		Coords cg = findChar(b, 'G');
 		Coords ce1 = new Coords(5, 0);
@@ -71,17 +71,17 @@ public class GameState {
 		this.exits.add(ce1);
 		this.exits.add(ce2);
 		String patrolRoute = "assssaaaaaasdddddddwwwww";
-		Guard guard = new Guard(patrolRoute, 'G', cg);
-		
+		Guard guard = new Guard(patrolRoute, 'G', cg, p);
+
 		this.leverORkey = findChar(b, 'k');
 		this.board = b;
 		this.level = 1;
 		this.hero = new Hero('H', ch);
 		this.guards.add(guard);
 	}
-	
+
 	public void lvl2() {
-		
+
 		char [][] b = {
 				{'X','X','X','X','X','X','X','X','X'},
 				{'I',' ',' ',' ','O',' ',' ','k','X'},
@@ -92,8 +92,8 @@ public class GameState {
 				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
 				{'X','H',' ',' ',' ',' ',' ',' ','X'},
 				{'X','X','X','X','X','X','X','X','X'}
-			};
-		
+		};
+
 		Coords ch = findChar(b, 'H');
 		Coords co = findChar(b, 'O');
 		Coords cc = new Coords(co.X(), co.Y() - 1);
@@ -129,7 +129,7 @@ public class GameState {
 		this.guards.clear();
 		this.hero.armHero();
 	}
-	
+
 	public void stunOgres() {
 		Coords c1, c2, c3, c4;
 		if(this.hero.isArmed()) {
@@ -149,29 +149,29 @@ public class GameState {
 			}
 		}
 	}
-	
+
 	public void wakeOgres() {
 		for(int i = 0; i < this.ogres.size(); i++) {
 			this.ogres.get(i).wakeOgre();
 		}
 	}
-	
+
 	public void gg() {
 		this.level = 0;
 		System.out.println("GG WP");
 	}
-	
-	public GameState(int level) {
+
+	public GameState(int level, char p) {
 		this.guards = new LinkedList<Guard>();
 		this.ogres = new LinkedList<Ogre>();
 		this.exits = new LinkedList<Coords>();
 		if (level == 1) {
-			this.lvl1();
+			this.lvl1(p);
 		}else if (level == 2) {
 			this.lvl2();
 		}
 	}
-	
+
 	public GameState(char [][] board, LinkedList<Coords> exits,LinkedList<Ogre> ogres, LinkedList<Guard> guards) {
 		this.board = board;
 		this.guards = new LinkedList<Guard>();
@@ -188,13 +188,11 @@ public class GameState {
 			this.hero = new Hero('A', ch);
 			this.hero.armHero();
 		}
-		
-		
-		
+
 	}
-	
+
 	public void clearBoard() {
-		
+
 		char cell;
 		//Cycle that clears previous images from the board
 		for (int i = 0; i < this.board.length; i++) {
@@ -205,11 +203,11 @@ public class GameState {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public void updateBoard() {
-		
+
 		this.clearBoard();
 		Coords ch = this.hero.getCoords();
 		Coords cg;
@@ -253,16 +251,16 @@ public class GameState {
 			ogreOnKey = false;
 			clubOnKey = false;
 		}
-		
+
 		if (this.hero.getRep() != 'K' && !someoneOnKey) {
 			this.board[this.leverORkey.X()][this.leverORkey.Y()] = 'k';
 		} 
-		
-		
+
+
 	}
-	
+
 	public void unlockAll() {
-		
+
 		int xh, yh, xl, yl;
 		xh = this.hero.getCoords().X();
 		yh = this.hero.getCoords().Y();
@@ -278,9 +276,9 @@ public class GameState {
 			}
 		}
 	}
-	
+
 	public boolean exit() {
-		
+
 		int xh, yh;
 		xh = this.hero.getCoords().X();
 		yh = this.hero.getCoords().Y();
@@ -289,42 +287,42 @@ public class GameState {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public void moveGuards() {
-		
+
 		for(int i = 0; i < this.guards.size(); i++) {
 			this.guards.get(i).moveGuard(this.board);
 		}
 	}
-	
+
 	public void moveOgres() {
-		
+
 		for(int i = 0; i < this.ogres.size(); i++) {
 			this.ogres.get(i).moveOgre(this.ogres.get(i).randommov(), this.board);
 		}
 	}
-	
+
 	public void attackOgres() {
 		for (int i = 0; i < this.ogres.size(); i++) {
 			this.ogres.get(i).attackOgre(this.board);
 		}
 	}
-	
+
 	public Hero getHero() {
 		return this.hero;
 	}
-	
+
 	public char [][] getBoard(){
 		return this.board;
 	}
-	
+
 	public Coords getLeverORkey() {
 		return this.leverORkey;
 	}
-	
+
 	public LinkedList<Coords> getExits(){
 		return this.exits;
 	}
@@ -336,7 +334,7 @@ public class GameState {
 	public LinkedList<Guard> getGuards(){
 		return this.guards;
 	}
-		
+
 	public boolean isPlayerHit() {
 		int xh = this.hero.getCoords().X();
 		int yh = this.hero.getCoords().Y();
@@ -348,7 +346,7 @@ public class GameState {
 		}
 		return false;
 	}
-	
+
 	public boolean checkANUnlock(int x) {
 		int xh, yh, xe, ye;
 		xh = this.hero.getCoords().X();
@@ -378,10 +376,10 @@ public class GameState {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public void catchKey() {
 		int xh, yh, xl, yl;
 		xh = this.hero.getCoords().X();
@@ -392,6 +390,57 @@ public class GameState {
 			this.hero.setRep('K');
 		}
 	}
-	
-	
+
+	public void playLvl1() {
+
+		Scanner reader = new Scanner(System.in);
+		char key;
+		while(this.getHero().isAlive() && this.getLvl() == 1) {
+			this.printGameState();
+			key = reader.next().charAt(0);
+			this.getHero().moveHero(key, this.getBoard());
+			this.updateBoard();
+			this.moveGuards();
+			this.updateBoard();
+			if(this.getHero().guardScan(this.getBoard())) {
+				this.getHero().killHero();
+			}
+			this.unlockAll();
+			if(this.exit()) this.lvl2();
+			this.updateBoard();
+
+		}
+	}
+
+	public void playLvl2() {
+		Scanner reader = new Scanner(System.in);
+		char key;
+		int unlocked = 0;
+		while (this.getHero().isAlive() && this.getLvl() == 2) {
+			if (this.getHero().getRep() == 'K') {
+				if(this.checkANUnlock(unlocked)) unlocked++;
+			}
+			this.wakeOgres();
+			this.updateBoard();
+			this.printGameState();
+			key = reader.next().charAt(0);
+			this.getHero().moveHero(key, this.getBoard());
+			this.stunOgres();
+			this.updateBoard();
+			this.catchKey();
+			this.updateBoard();
+			this.moveOgres();
+			this.updateBoard();
+			this.attackOgres();
+			this.updateBoard();
+			if(this.exit()) this.gg();
+			if (this.isPlayerHit()) {
+				this.getHero().killHero();
+				this.updateBoard();
+				this.printGameState();
+			}
+		}
+	}
+
+
 }
