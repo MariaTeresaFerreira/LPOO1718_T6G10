@@ -8,7 +8,8 @@ public class Guard extends Enemy {
 	private Integer patrolCount;
 	private char persona;
 	
-	public char generatePersona() {
+	//TODO: ADD RANDOM PERSONA OPTION TO GUI
+	/*public char generatePersona() {
 		Random randomno = new Random();
 		int x = randomno.nextInt(3);
 		char ret;
@@ -21,13 +22,12 @@ public class Guard extends Enemy {
 		}
 		
 		return ret;
-	}
+	}*/
 	
 	public Guard(String nroute, char nrep, Coords coord, char p) {
 		super(nrep, coord);
 		this.route = nroute;
 		this.patrolCount = 0;
-		//this.persona = this.generatePersona();
 		this.persona = p;
 		super.status = 0;
 	}
@@ -140,8 +140,8 @@ public class Guard extends Enemy {
 		
 	}
 	
-	public void setPersona(char p) {
-		this.persona = p;
+	public char getPersona() {
+		return this.persona;
 	}
 	
 	public String getRoute() {
