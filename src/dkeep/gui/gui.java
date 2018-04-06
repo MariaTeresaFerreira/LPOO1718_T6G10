@@ -25,6 +25,13 @@ public class gui {
 	private GameState g;
 	private JTextArea textArea;
 	private int no;
+	private JLabel message;
+	private Integer unlocked;
+	
+	JButton btnUp;
+	JButton btnDown;
+	JButton btnLeft;
+	JButton btnRight;
 	
 	/**
 	 * Launch the application.
@@ -82,58 +89,40 @@ public class gui {
 
 
 		// Movement buttons
-		JButton btnUp = new JButton("Up");
+		btnUp = new JButton("Up");
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				char key = 'w';
-				if(g.getLvl() == 1) {
-					playLvl1GUI(key, no);
-				}else if (g.getLvl() == 2) {
-					playLvl2GUI(key);
-				}
+				directionAction('w');
 			}
 		});
 		btnUp.setBounds(585, 165, 117, 29);
 		frame.getContentPane().add(btnUp);
 
-		JButton btnDown = new JButton("Down");
+		btnDown = new JButton("Down");
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				char key = 's';
-				if(g.getLvl() == 1) {
-					playLvl1GUI(key, no);
-				}else if (g.getLvl() == 2) {
-					playLvl2GUI(key);
-				}
+				directionAction('s');
 				
 			}
 		});
 		btnDown.setBounds(585, 247, 117, 29);
 		frame.getContentPane().add(btnDown);
 
-		JButton btnLeft = new JButton("Left");
+		btnLeft = new JButton("Left");
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				char key = 'a';
-				if(g.getLvl() == 1) {
-					playLvl1GUI(key, no);
-				}else if (g.getLvl() == 2) {
-					playLvl2GUI(key);
-				}
+				directionAction('a');
 			}
 		});
 		btnLeft.setBounds(530, 206, 117, 29);
 		frame.getContentPane().add(btnLeft);
 
-		JButton btnRight = new JButton("Right");
+		btnRight = new JButton("Right");
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				char key = 'd';
-				if(g.getLvl() == 1) {
-					playLvl1GUI(key, no);
-				}else if (g.getLvl() == 2) {
-					playLvl2GUI(key);
-				}
+				
+				directionAction('d');
+				
 			}
 		});
 		btnRight.setBounds(642, 206, 117, 29);
@@ -156,7 +145,7 @@ public class gui {
 		frame.getContentPane().add(textArea);
 
 		// variable message
-		JLabel message = new JLabel("You can start a new game. (max. 4 ogres) ");
+		message = new JLabel("You can start a new game. (max. 5 ogres) ");
 		message.setBounds(24, 445, 400, 16);
 		frame.getContentPane().add(message);
 
@@ -168,6 +157,7 @@ public class gui {
 				boolean inputIsValid = false;
 				char guardPer = ' ';
 				no = 0; // number os ogres
+				unlocked = 0;
 				
 				try {
 					no = Integer.parseInt(ogresNumber.getText());
@@ -198,7 +188,7 @@ public class gui {
 					break;
 				}
 				
-				if(no < 1 || no > 4 || guardPer == ' ') {
+				if(no < 1 || no > 5 || guardPer == ' ') {
 					inputIsValid = false;
 				}
 				
@@ -206,17 +196,11 @@ public class gui {
 					message.setText("The input is not valid.");
 				}else {
 					g = new GameState(1, guardPer, no);
-					message.setText("Level " + g.getLvl());
 					g.printMatrixGUI(g.getBoard(), textArea);
-//					
-//					g.playLvl1(true, textArea);
-//					if(g.getHero().isAlive()) g.playLvl2(true, textArea);
-//					if (!g.getHero().isAlive()) {
-//						g.printGameState(true, textArea);
-//						
-//						message.setText("GG");
-//					}
-					
+					btnUp.setEnabled(true);
+					btnDown.setEnabled(true);
+					btnLeft.setEnabled(true);
+					btnRight.setEnabled(true);
 				}
 
 			}
@@ -228,25 +212,37 @@ public class gui {
 	
 	public void playLvl1GUI(char key, int no) {
 		
+		message.setText("Level 1");
+		
 		g.getHero().moveHero(key, g.getBoard());
 		g.updateBoard();
 		g.moveGuards();
 		g.updateBoard();
+		
+		g.unlockAll();
+		if(g.exit()) {
+			g.lvl2(no);
+			message.setText("Level 2");
+		}
+		g.updateBoard();
 		if(g.getHero().guardScan(g.getBoard())) {
 			g.getHero().killHero();
+			death();
 			
 		}
-		g.unlockAll();
-		if(g.exit()) g.lvl2(no);
-		g.updateBoard();
-		g.printMatrixGUI(g.getBoard(), textArea);
+		if (g != null) {
+			g.printMatrixGUI(g.getBoard(), textArea);
+		}
 	}
 	
 	public void playLvl2GUI(char key) {
 		
-		int unlocked = 0;
+		message.setText("Level 2");
+		
 		if (g.getHero().getRep() == 'K') {
 			if(g.checkANUnlock(unlocked)) unlocked++;
+			System.out.println(unlocked);
+			//System.out.println(g.checkANUnlock(unlocked));
 		}
 		g.wakeOgres();
 		g.updateBoard();
@@ -260,13 +256,44 @@ public class gui {
 		g.updateBoard();
 		g.attackOgres();
 		g.updateBoard();
-		if(g.exit()) g.gg();
-		if (g.isPlayerHit()) {
-			g.getHero().killHero();
-			g.updateBoard();
-			g.printGameState(true, textArea);
+		if(g.exit()) {
+			g.gg();
+			win();
 		}
+		if (g != null) {
+			if (g.isPlayerHit()) {
+				g.getHero().killHero();
+				g.updateBoard();
+				g.printGameState(true, textArea);
+				death();
+			}
+			if (g != null )g.printMatrixGUI(g.getBoard(), textArea);
+		}
+	}
+	
+	public void death () {
+		message.setText("Game Over (ya ded, boi) ");
+		btnUp.setEnabled(false);
+		btnDown.setEnabled(false);
+		btnLeft.setEnabled(false);
+		btnRight.setEnabled(false);
 		
+	}
+	
+	public void win() {
+		g = null;
+		message.setText("gud game, son");
+		textArea.setText("");
+	}
+	
+	public void directionAction(char key) {
+		if(g != null) {
+			if(g.getLvl() == 1) {
+				playLvl1GUI(key, no);
+			}else if (g.getLvl() == 2) {
+				playLvl2GUI(key);
+			}	
+		}
 		
 	}
 	
