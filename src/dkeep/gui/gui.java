@@ -171,7 +171,7 @@ public class gui {
 
 		// variable message
 		message = new JLabel("You can start a new game. (max. 5 ogres) ");
-		message.setBounds(24, 445, 400, 16);
+		message.setBounds(24, 640, 400, 16);
 		frame.getContentPane().add(message);
 
 		// New game Button
