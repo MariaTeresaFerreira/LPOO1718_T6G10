@@ -16,6 +16,8 @@ import java.awt.Font;
 
 import dkeep.*;
 import dkeep.logic.GameState;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class gui {
 
@@ -140,6 +142,26 @@ public class gui {
 
 		//show game
 		textArea = new JTextArea();
+		textArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			    int keyCode = e.getKeyCode();
+			    switch( keyCode ) { 
+			        case KeyEvent.VK_UP:
+			        		directionAction('w');
+			            break;
+			        case KeyEvent.VK_DOWN:
+			        		directionAction('s');
+			            break;
+			        case KeyEvent.VK_LEFT:
+			        		directionAction('a');
+			            break;
+			        case KeyEvent.VK_RIGHT :
+			        		directionAction('d');
+			            break;
+			     }
+			} 
+		});
 		textArea.setFont(new Font("Courier New", Font.PLAIN, 20));
 		textArea.setBounds(23, 108, 487, 306);
 		frame.getContentPane().add(textArea);
@@ -153,6 +175,8 @@ public class gui {
 		JButton btnNewGame = new JButton("New Game");
 		btnNewGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				textArea.requestFocusInWindow();
 				
 				boolean inputIsValid = false;
 				char guardPer = ' ';
@@ -241,8 +265,6 @@ public class gui {
 		
 		if (g.getHero().getRep() == 'K') {
 			if(g.checkANUnlock(unlocked)) unlocked++;
-			System.out.println(unlocked);
-			//System.out.println(g.checkANUnlock(unlocked));
 		}
 		g.wakeOgres();
 		g.updateBoard();
@@ -292,7 +314,7 @@ public class gui {
 				playLvl1GUI(key, no);
 			}else if (g.getLvl() == 2) {
 				playLvl2GUI(key);
-			}	
+			}
 		}
 		
 	}
