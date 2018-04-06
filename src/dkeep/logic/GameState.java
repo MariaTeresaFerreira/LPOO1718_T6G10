@@ -248,6 +248,7 @@ public class GameState {
 		this.ogres = ogres;
 		this.exits = new LinkedList<Coords>();
 		this.exits = exits;
+		this.level = 2;
 		this.leverORkey = findChar(board, 'k');
 		Coords ch = findChar(board, 'H');
 		this.hero = new Hero('H', ch);

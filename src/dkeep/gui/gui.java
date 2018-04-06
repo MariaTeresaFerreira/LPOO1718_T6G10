@@ -19,6 +19,7 @@ import dkeep.*;
 import dkeep.logic.GameState;
 import dkeep.logic.Coords;
 import dkeep.logic.Ogre;
+import dkeep.logic.Guard;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
@@ -42,8 +43,8 @@ public class gui {
 	private JButton btnCustomKeep;
 	private char[][] customMatrix;
 	private Integer x, y;
-	private LinkedList<Coords> customEx = new LinkedList<Coords>();
-	private LinkedList<Ogre> customOGs = new LinkedList<Ogre>();
+	private LinkedList<Coords> customEx;
+	private LinkedList<Ogre> customOGs;
 	JButton btnUp;
 	JButton btnDown;
 	JButton btnLeft;
@@ -101,7 +102,8 @@ public class gui {
 		ogresNumber.setBounds(167, 15, 115, 26);
 		frame.getContentPane().add(ogresNumber);
 		ogresNumber.setColumns(10);
-
+		customEx  = new LinkedList<Coords>();
+		customOGs = new LinkedList<Ogre>();
 		JComboBox<String> gPersonality = new JComboBox();
 		gPersonality.setBounds(167, 41, 115, 27);
 		gPersonality.addItem("Rookie");
@@ -343,6 +345,26 @@ public class gui {
 		btnStart.setVisible(false);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				g = new GameState(customMatrix, customEx, customOGs, new LinkedList<Guard> ());
+				xInput.setVisible(false);
+				yInput.setVisible(false);
+				lblX.setVisible(false);
+				lblY.setVisible(false);
+				charSelect.setVisible(false);
+				btnAdd.setVisible(false);
+				btnRemove.setVisible(false);
+				btnStart.setVisible(false);
+				
+				btnUp.setVisible(true);
+				btnDown.setVisible(true);
+				btnLeft.setVisible(true);
+				btnRight.setVisible(true);
+				
+				panel.setFocusable(true);
+				panel.requestFocusInWindow();
+				unlocked = 0;
+				panel.setBoard(g.getBoard());
+				panel.repaint();
 			}
 		});
 		btnStart.setBounds(620, 534, 117, 29);
@@ -371,31 +393,38 @@ public class gui {
 				if (s == 'I' && x < customMatrix.length && x > -1 && y < customMatrix[0].length && y > -1) {
 					Coords cx = new Coords(x, y);
 					customEx.add(cx);
+					customMatrix = alterMatrix(x, y, s, customMatrix);
 				}
 				if (x < customMatrix.length && y < customMatrix[0].length && x > 0 && y > 0) {
-
-				
 				
 					if (s == 'A') {
-						if (findCharGUI(customMatrix, 'A').X() != -1 && findCharGUI(customMatrix, 'A').Y() != -1) {
-							customMatrix[x][y] = 'A'; 
+						if (findCharGUI(customMatrix, 'A').X() == -1 && findCharGUI(customMatrix, 'A').Y() == -1) {
+							customMatrix = alterMatrix(x, y, s, customMatrix); 
 						}
 					}
 					if (s == 'k') {
-						if (findCharGUI(customMatrix, 'k').X() != -1 && findCharGUI(customMatrix, 'k').Y() != -1) {
-							customMatrix[x][y] = 'k'; 
+						if (findCharGUI(customMatrix, 'k').X() == -1 && findCharGUI(customMatrix, 'k').Y() == -1) {
+							customMatrix = alterMatrix(x, y, s, customMatrix); 
 						}
 					}
 				
 					if (s == 'O') {
 						if (customOGs.size() < 5) {
 							Coords co = new Coords(x, y);
-							Ogre og = new Ogre(s, co, co, '*');
+							int modx = 0;
+							if(x + 1 < customMatrix.length) modx = 1;
+							else modx = -1;
+							Coords cc = new Coords(x + modx, y);
+							Ogre og = new Ogre(s, co, cc, '*');
 							customOGs.add(og);
+							customMatrix = alterMatrix(x, y, s, customMatrix);
 						}
 					}
+					
+					if (s == 'X') {
+						customMatrix = alterMatrix(x, y, s, customMatrix);
+					}
 				}
-				System.out.println(customMatrix[x][y]);
 				
 				panel.setBoard(customMatrix);
 				panel.repaint();	
@@ -410,11 +439,15 @@ public class gui {
 		btnRemove = new JButton("Clear board");
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i = 1; i < customMatrix.length - 1; i++) {
-					for (int j = 1; j < customMatrix[0].length - 1; j++) {
+				for (int i = 0; i < customMatrix.length; i++) {
+					for (int j = 0; j < customMatrix[0].length; j++) {
 						customMatrix[i][j] = ' ';
+						if (i == 0 || j == 0 || i == customMatrix.length - 1 || j == customMatrix[0].length - 1) {
+							customMatrix[i][j] = 'X';
+						}
 					}
 				}
+				g = null;
 				panel.setBoard(customMatrix);
 				panel.repaint();
 			}
@@ -437,9 +470,13 @@ public class gui {
 				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
 				{'X','X','X','X','X','X','X','X','X'}
 		};
-		System.out.println("1 Matrix");
 		
 		return a;
+	}
+	
+	public char[][] alterMatrix(int x, int y, char s, char[][]b){
+		b[x][y] = s;
+		return b;
 	}
 	
 	public void playLvl1GUI(char key, int no) {
