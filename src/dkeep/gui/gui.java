@@ -290,6 +290,7 @@ public class gui {
 				btnStart.setVisible(true);
 				btnAdd.setVisible(true);
 				btnRemove.setVisible(true);
+				panel.repaint();
 				
 				
 				
@@ -394,6 +395,7 @@ public class gui {
 						}
 					}
 				}
+				System.out.println(customMatrix[x][y]);
 				
 				panel.setBoard(customMatrix);
 				panel.repaint();	
@@ -435,6 +437,7 @@ public class gui {
 				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
 				{'X','X','X','X','X','X','X','X','X'}
 		};
+		System.out.println("1 Matrix");
 		
 		return a;
 	}
@@ -555,7 +558,7 @@ public class gui {
 		return '0';
 	}
 	
-	public static Coords findCharGUI(char board[][], char c) {
+	public Coords findCharGUI(char board[][], char c) {
 
 		Coords b = new Coords(-1, -1);
 		for(int i = 0; i < board.length; i++)
