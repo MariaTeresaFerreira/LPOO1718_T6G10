@@ -61,7 +61,7 @@ public class Guard extends Enemy {
 	}
 	
 	/**
-	 * Auxiliar to invertRoute takes a key as 'WASD' and returns it's oposite (w --> a, s ---> d ...)
+	 * Auxiliar to invertRoute takes a key as 'WASD' and returns it's oposite (w -- a, s --- d ...)
 	 *
 	 * @param      key   The key
 	 *
@@ -83,7 +83,7 @@ public class Guard extends Enemy {
 
 
 	/**
-	 * Reverses the guards patrol ('wasd' ---> 'dsaw')
+	 * Reverses the guards patrol ('wasd' -- 'dsaw')
 	 */
 	public void invertPatrol(){
 		String aux1 = "";
