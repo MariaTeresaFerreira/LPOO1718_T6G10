@@ -7,23 +7,15 @@ public class Guard extends Enemy {
 	private String route;
 	private Integer patrolCount;
 	private char persona;
-	
-	//TODO: ADD RANDOM PERSONA OPTION TO GUI
-	/*public char generatePersona() {
-		Random randomno = new Random();
-		int x = randomno.nextInt(3);
-		char ret;
-		if(x == 0){
-			ret = 'r';
-		}else if (x == 1) {
-			ret = 'd';
-		}else {
-			ret = 's';
-		}
 		
-		return ret;
-	}*/
-	
+	/**
+	 * Constructs the object
+	 *
+	 * @param      nroute  The route
+	 * @param      nrep    The representation
+	 * @param      coord   The coordinatess
+	 * @param      p       The Personality
+	 */
 	public Guard(String nroute, char nrep, Coords coord, char p) {
 		super(nrep, coord);
 		this.route = nroute;
@@ -32,6 +24,11 @@ public class Guard extends Enemy {
 		super.status = 0;
 	}
 	
+	/**
+	 * Gets the next mov as a key, if the guard is asleep (super.status == 1) returns ' '
+	 *
+	 * @return     The next mov as a key
+	 */
 	public char getNextMov() {
 		if (super.status == 1) return ' ';
 		char c = this.route.charAt(this.patrolCount.intValue());
@@ -41,10 +38,21 @@ public class Guard extends Enemy {
 		
 	}
 	
+
+	/**
+	 * Gets the patrol count.
+	 *
+	 * @return     The patrol count.
+	 */
 	public int getPatrolCount() {
 		return this.patrolCount.intValue();
 	}
 	
+	/*
+	 * Activates any random effects that might affect the guard and moves it
+	 * 
+	 * @param board		Game board
+	 */
 	public void moveGuard(char board [][]) {
 		
 		this.updateGuard();
@@ -52,6 +60,13 @@ public class Guard extends Enemy {
 		super.moveEnemy(key, board);
 	}
 	
+	/**
+	 * Auxiliar to invertRoute takes a key as 'WASD' and returns it's oposite (w --> a, s ---> d ...)
+	 *
+	 * @param      key   The key
+	 *
+	 * @return     The 'inverted' key
+	 */
 	public String invertKey(String key){
 		if(key.equals("w")){
 			return "s";
@@ -67,6 +82,9 @@ public class Guard extends Enemy {
 	}
 
 
+	/**
+	 * Reverses the guards patrol ('wasd' ---> 'dsaw')
+	 */
 	public void invertPatrol(){
 		String aux1 = "";
 		String key, aux2;
@@ -80,6 +98,9 @@ public class Guard extends Enemy {
 		 
 	}
 	
+	/**
+	 * Makes the guard 'go backwards'
+	 */
 	public void invertRoute(){
 		int x = this.patrolCount.intValue();
 		if (x == 0) x = 1;
@@ -88,6 +109,12 @@ public class Guard extends Enemy {
 		this.invertPatrol();
 	}
 	
+
+	/**
+	 * Random Event 
+	 *
+	 * @return     true or false (40% chance to roll true)
+	 */
 	public boolean randomEvent () {
 		
 		Random randomno = new Random();
@@ -99,6 +126,11 @@ public class Guard extends Enemy {
 		
 	}
 	
+	/**
+	 * Random Event specifically  for waking the drunken guard
+	 *
+	 * @return     50% chance to wake up
+	 */
 	public boolean wakeUp() {
 		Random randomno = new Random();
 		int n = randomno.nextInt(2);
@@ -108,12 +140,18 @@ public class Guard extends Enemy {
 		return false;
 	}
 	
+	/**
+	 * How the suspicious guard reacts to random event
+	 */
 	public void eventSuspicious() {
 		if (this.randomEvent()) {
 			this.invertRoute();
 		}
 	}
 	
+	/**
+	 * How the drunken guard reacts to random event
+	 */
 	public void eventDrunken() {
 		if(this.randomEvent() || (super.status.intValue() == 1 && this.wakeUp())) {
 			if(super.status.intValue() == 0 || super.status.intValue() == 2) {
@@ -131,6 +169,9 @@ public class Guard extends Enemy {
 		}		
 	}
 	
+	/**
+	 * If the guard is not a rookie triggers it's events
+	 */
 	public void updateGuard() {
 		if(this.persona == 's') {
 			this.eventSuspicious();
@@ -140,14 +181,29 @@ public class Guard extends Enemy {
 		
 	}
 	
+	/**
+	 * Gets the personality of the guard
+	 *
+	 * @return     The personality
+	 */
 	public char getPersona() {
 		return this.persona;
 	}
 	
+	/**
+	 * Gets the route
+	 *
+	 * @return     The route
+	 */
 	public String getRoute() {
 		return this.route;
 	}
 	
+	/**
+	 * Gets the status
+	 *
+	 * @return     The status
+	 */
 	public int getStatus() {
 		return super.status.intValue();
 	}

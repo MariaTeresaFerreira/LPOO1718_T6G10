@@ -142,33 +142,6 @@ public class gui {
 		btnExit.setBounds(585, 396, 117, 29);
 		frame.getContentPane().add(btnExit);
 
-		//show game
-		/*
-		textArea = new JTextArea();
-		textArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-			    int keyCode = e.getKeyCode();
-			    switch( keyCode ) { 
-			        case KeyEvent.VK_UP:
-			        		directionAction('w');
-			            break;
-			        case KeyEvent.VK_DOWN:
-			        		directionAction('s');
-			            break;
-			        case KeyEvent.VK_LEFT:
-			        		directionAction('a');
-			            break;
-			        case KeyEvent.VK_RIGHT :
-			        		directionAction('d');
-			            break;
-			     }
-			} 
-		});
-		textArea.setFont(new Font("Courier New", Font.PLAIN, 20));
-		textArea.setBounds(23, 108, 487, 306);
-		frame.getContentPane().add(textArea);*/
-
 		// variable message
 		message = new JLabel("You can start a new game. (max. 5 ogres) ");
 		message.setBounds(24, 640, 400, 16);

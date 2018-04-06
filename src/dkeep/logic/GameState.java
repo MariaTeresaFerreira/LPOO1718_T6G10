@@ -16,10 +16,22 @@ public class GameState {
 	private LinkedList<Coords> exits;
 
 
+	/**
+	 * Gets the level.
+	 *
+	 * @return     The level.
+	 */
 	public int getLvl() {
 		return this.level;
 	}
 
+	/*
+	 * Given a char and the board returns the char's coordinates
+	 *
+	 *	@param  board	board
+	 *	@param  c		char to be found
+	 *	@return the coordinates of the given char
+	 */
 	public Coords findChar(char board[][], char c) {
 
 		Coords b = new Coords(-1, -1);
@@ -31,6 +43,11 @@ public class GameState {
 		return b;
 	}
 
+	/**
+	 * prints an Array
+	 *
+	 * @param      anArray  An array
+	 */
 	public void printArray(char[] anArray) {
 		for (int i = 0; i < anArray.length; i++) {
 			if (i > 0) System.out.print(" ");
@@ -38,6 +55,11 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * prints a Matrix
+	 *
+	 * @param      aMatrix  A matrix
+	 */
 	public void printMatrix(char[][] aMatrix) {
 
 		for(int i = 0; i < aMatrix.length; i++) {
@@ -46,6 +68,12 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Prints the game state
+	 *
+	 * @param      gui   The graphical user interface (if it was called there or not)
+	 * @param      t     The text area to write the gamestate to
+	 */
 	public void printGameState(boolean gui, JTextArea t) {
 		if(gui) {
 			this.printMatrixGUI(this.board, t);
@@ -56,6 +84,11 @@ public class GameState {
 		
 	}
 
+	/**
+	 * Level 1 (Setup)
+	 *
+	 * @param      p     guards personality
+	 */
 	public void lvl1(char p) {
 		char [][] b = {
 				{'X','X','X','X','X','X','X','X','X','X'},
@@ -86,6 +119,11 @@ public class GameState {
 		this.guards.add(guard);
 	}
 
+	/**
+	 * Level 2
+	 *
+	 * @param      no    number of ogres
+	 */
 	public void lvl2(int no) {
 
 		char [][] b = {
@@ -136,6 +174,9 @@ public class GameState {
 		this.hero.armHero();
 	}
 
+	/**
+	 * Stuns all the ogres around the hero
+	 */
 	public void stunOgres() {
 		Coords c1, c2, c3, c4;
 		if(this.hero.isArmed()) {
@@ -148,25 +189,38 @@ public class GameState {
 						this.ogres.get(i).getCoords().Y() + 1);
 				c4 = new Coords(this.ogres.get(i).getCoords().X(), 
 						this.ogres.get(i).getCoords().Y() + 1);
-				if(this.hero.getCoords().equal(c1) || this.hero.getCoords().equal(c2) ||
-						this.hero.getCoords().equal(c3) || this.hero.getCoords().equal(c4)) {
+				if(this.hero.getCoords().equals(c1) || this.hero.getCoords().equals(c2) ||
+						this.hero.getCoords().equals(c3) || this.hero.getCoords().equals(c4)) {
 					this.ogres.get(i).stunMe();
 				}
 			}
 		}
 	}
 
+	/**
+	 * Calls wake ogre for all the ogres in the game
+	 */
 	public void wakeOgres() {
 		for(int i = 0; i < this.ogres.size(); i++) {
 			this.ogres.get(i).wakeOgre();
 		}
 	}
 
+	/**
+	 * Player wins
+	 */
 	public void gg() {
 		this.level = 0;
 		System.out.println("GG WP");
 	}
 
+	/**
+	 * Constructs the object.
+	 *
+	 * @param      level  The level
+	 * @param      p      guard personality
+	 * @param      no     number of ogres
+	 */
 	public GameState(int level, char p, int no) {
 		this.guards = new LinkedList<Guard>();
 		this.ogres = new LinkedList<Ogre>();
@@ -178,6 +232,14 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Constructs the object.
+	 *
+	 * @param      board   The board
+	 * @param      exits   The exits
+	 * @param      ogres   The ogres
+	 * @param      guards  The guards
+	 */
 	public GameState(char [][] board, LinkedList<Coords> exits,LinkedList<Ogre> ogres, LinkedList<Guard> guards) {
 		this.board = board;
 		this.guards = new LinkedList<Guard>();
@@ -197,6 +259,9 @@ public class GameState {
 
 	}
 
+	/**
+	 * Removes entities (hero, guard, ogre and club) 
+	 */
 	public void clearBoard() {
 
 		char cell;
@@ -212,6 +277,9 @@ public class GameState {
 
 	}
 
+	/**
+	 * Updates the board with the entities new positions
+	 */
 	public void updateBoard() {
 
 		this.clearBoard();
@@ -230,7 +298,7 @@ public class GameState {
 
 		for(i = 0; i < this.ogres.size(); i++) {
 			cg = this.ogres.get(i).getCoords();
-			ogreOnKey = ogreOnKey || (this.ogres.get(i).getCoords().equal(this.leverORkey) &&
+			ogreOnKey = ogreOnKey || (this.ogres.get(i).getCoords().equals(this.leverORkey) &&
 					this.hero.getRep() != 'K');
 			if (ogreOnKey) {
 				this.ogres.get(i).setRep('$');
@@ -243,7 +311,7 @@ public class GameState {
 				}
 			}
 			cc = this.ogres.get(i).getCCoords();
-			clubOnKey = clubOnKey || (this.ogres.get(i).getCCoords().equal(this.leverORkey) &&
+			clubOnKey = clubOnKey || (this.ogres.get(i).getCCoords().equals(this.leverORkey) &&
 					this.hero.getRep() != 'K');
 			if(clubOnKey) {
 				this.ogres.get(i).setCRep('$');
@@ -265,6 +333,9 @@ public class GameState {
 
 	}
 
+	/**
+	 * If the hero activates the lever unlocks all doors
+	 */
 	public void unlockAll() {
 
 		int xh, yh, xl, yl;
@@ -283,6 +354,11 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Checks if the hero has left the area
+	 *
+	 * @return     True if yes, false ow
+	 */
 	public boolean exit() {
 
 		int xh, yh;
@@ -297,6 +373,9 @@ public class GameState {
 		return false;
 	}
 
+	/**
+	 * Moves the guards
+	 */
 	public void moveGuards() {
 
 		for(int i = 0; i < this.guards.size(); i++) {
@@ -304,6 +383,9 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Moves the ogres
+	 */
 	public void moveOgres() {
 
 		for(int i = 0; i < this.ogres.size(); i++) {
@@ -311,36 +393,74 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Ogres attack
+	 */
 	public void attackOgres() {
 		for (int i = 0; i < this.ogres.size(); i++) {
 			this.ogres.get(i).attackOgre(this.board);
 		}
 	}
 
+	/**
+	 * Gets the hero.
+	 *
+	 * @return     The hero.
+	 */
 	public Hero getHero() {
 		return this.hero;
 	}
 
+	/**
+	 * Gets the board.
+	 *
+	 * @return     The board.
+	 */
 	public char [][] getBoard(){
 		return this.board;
 	}
 
+	/**
+	 * Gets the lever or key.
+	 *
+	 * @return     The lever or key.
+	 */
 	public Coords getLeverORkey() {
 		return this.leverORkey;
 	}
 
+	/**
+	 * Gets the exits.
+	 *
+	 * @return     The exits.
+	 */
 	public LinkedList<Coords> getExits(){
 		return this.exits;
 	}
 	
+	/**
+	 * Gets the ogres.
+	 *
+	 * @return     The ogres.
+	 */
 	public LinkedList<Ogre> getOgres(){
 		return this.ogres;
 	}
 	
+	/**
+	 * Gets the guards.
+	 *
+	 * @return     The guards.
+	 */
 	public LinkedList<Guard> getGuards(){
 		return this.guards;
 	}
 
+	/**
+	 * Determines if player hit.
+	 *
+	 * @return     True if player hit, False otherwise.
+	 */
 	public boolean isPlayerHit() {
 		int xh = this.hero.getCoords().X();
 		int yh = this.hero.getCoords().Y();
@@ -353,6 +473,13 @@ public class GameState {
 		return false;
 	}
 
+	/**
+	 * Checks if the hero is trying (and can) unlock a door, if so after 1 turn unlocks the door
+	 *
+	 * @param      x     hero needs 1 turn to unlock, if x == 0, does nothing, but if x == 1 opens the doors
+	 *
+	 * @return     True when it unlocks the door
+	 */
 	public boolean checkANUnlock(int x) {
 		int xh, yh, xe, ye;
 		xh = this.hero.getCoords().X();
@@ -386,6 +513,9 @@ public class GameState {
 		return false;
 	}
 
+	/**
+	 * Hero catches key
+	 */
 	public void catchKey() {
 		int xh, yh, xl, yl;
 		xh = this.hero.getCoords().X();
@@ -397,6 +527,12 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Play Level 1
+	 *
+	 * @param      gui   if its run on the graphical user interface then true
+	 * @param      t     Text area to which it should write the board
+	 */
 	public void playLvl1(boolean gui, JTextArea t) {
 
 		Scanner reader = new Scanner(System.in);
@@ -418,6 +554,12 @@ public class GameState {
 		}
 	}
 
+	/**
+	 * Play Level 2
+	 *
+	 * @param      gui   if it is run on the graphical user interface
+	 * @param      t     Text area to which it should write the board
+	 */
 	public void playLvl2(boolean gui, JTextArea t) {
 		Scanner reader = new Scanner(System.in);
 		char key;
@@ -448,6 +590,13 @@ public class GameState {
 		}
 	}
 	
+	/**
+	 * Converts an array to a string
+	 *
+	 * @param      anArray  An array
+	 *
+	 * @return     the string
+	 */
 	public String arrayToString (char [] anArray) {
 		String s = new String();
 		
@@ -458,6 +607,13 @@ public class GameState {
 	}
 	
 	
+	/**
+	 * Converts a Matrix to a string
+	 *
+	 * @param      aMatrix  A matrix
+	 *
+	 * @return     the string
+	 */
 	public String matrixToString(char [][] aMatrix) {
 		
 		String s = "";
@@ -470,6 +626,12 @@ public class GameState {
 		
 	}
 	
+	/**
+	 * Prints the GameState in text mode for the gui
+	 *
+	 * @param      aMatrix  A matrix
+	 * @param      t        the JTextArea
+	 */
 	public void printMatrixGUI(char [][] aMatrix, JTextArea t) {
 		
 		String s = matrixToString(aMatrix);
