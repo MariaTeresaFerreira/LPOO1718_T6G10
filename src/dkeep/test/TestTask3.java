@@ -45,7 +45,7 @@ public class TestTask3 {
 				s = true;
 			}else if(co.equals(cd)) {
 				d = true;
-			}else if(co.equal(coo)) {
+			}else if(co.equals(coo)) {
 				o = true;
 			}
 			else {
