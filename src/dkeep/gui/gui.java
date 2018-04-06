@@ -18,6 +18,7 @@ import dkeep.*;
 import dkeep.logic.GameState;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JPanel;
 
 public class gui {
 
@@ -25,7 +26,8 @@ public class gui {
 	private JTextField ogresNumber;
 	
 	private GameState g;
-	private JTextArea textArea;
+	//private JTextArea textArea;
+	private Pannel panel;
 	private int no;
 	private JLabel message;
 	private Integer unlocked;
@@ -65,7 +67,7 @@ public class gui {
 		frame = new JFrame();
 		frame.setResizable(false);
 		//frame.setBounds(100, 100, 450, 300);
-		frame.setBounds(100, 100, 800, 500);
+		frame.setBounds(100, 100, 813, 696);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -141,6 +143,7 @@ public class gui {
 		frame.getContentPane().add(btnExit);
 
 		//show game
+		/*
 		textArea = new JTextArea();
 		textArea.addKeyListener(new KeyAdapter() {
 			@Override
@@ -164,7 +167,7 @@ public class gui {
 		});
 		textArea.setFont(new Font("Courier New", Font.PLAIN, 20));
 		textArea.setBounds(23, 108, 487, 306);
-		frame.getContentPane().add(textArea);
+		frame.getContentPane().add(textArea);*/
 
 		// variable message
 		message = new JLabel("You can start a new game. (max. 5 ogres) ");
@@ -176,7 +179,9 @@ public class gui {
 		btnNewGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				textArea.requestFocusInWindow();
+				//textArea.requestFocusInWindow();
+				//frame.requestFocusInWindow();
+				
 				
 				boolean inputIsValid = false;
 				char guardPer = ' ';
@@ -220,7 +225,9 @@ public class gui {
 					message.setText("The input is not valid.");
 				}else {
 					g = new GameState(1, guardPer, no);
-					g.printMatrixGUI(g.getBoard(), textArea);
+					//g.printMatrixGUI(g.getBoard(), textArea);
+					panel.setBoard(g.getBoard());
+					panel.repaint();
 					btnUp.setEnabled(true);
 					btnDown.setEnabled(true);
 					btnLeft.setEnabled(true);
@@ -231,13 +238,36 @@ public class gui {
 		});
 		btnNewGame.setBounds(585, 68, 117, 29);
 		frame.getContentPane().add(btnNewGame);
+		
+		panel = new Pannel();
+		panel.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+			    switch( keyCode ) { 
+			        case KeyEvent.VK_UP:
+			        		directionAction('w');
+			            break;
+			        case KeyEvent.VK_DOWN:
+			        		directionAction('s');
+			            break;
+			        case KeyEvent.VK_LEFT:
+			        		directionAction('a');
+			            break;
+			        case KeyEvent.VK_RIGHT :
+			        		directionAction('d');
+			            break;
+			     }
+			}
+		});
+		panel.setBounds(42, 124, 500, 500);
+		frame.getContentPane().add(panel);
 
 	}
 	
 	public void playLvl1GUI(char key, int no) {
 		
 		message.setText("Level 1");
-		
 		g.getHero().moveHero(key, g.getBoard());
 		g.updateBoard();
 		g.moveGuards();
@@ -255,7 +285,8 @@ public class gui {
 			
 		}
 		if (g != null) {
-			g.printMatrixGUI(g.getBoard(), textArea);
+			panel.setBoard(g.getBoard());
+			panel.repaint();
 		}
 	}
 	
@@ -268,7 +299,6 @@ public class gui {
 		}
 		g.wakeOgres();
 		g.updateBoard();
-		g.printGameState(true, textArea);
 		g.getHero().moveHero(key, g.getBoard());
 		g.stunOgres();
 		g.updateBoard();
@@ -286,10 +316,14 @@ public class gui {
 			if (g.isPlayerHit()) {
 				g.getHero().killHero();
 				g.updateBoard();
-				g.printGameState(true, textArea);
+				panel.setBoard(g.getBoard());
+				panel.repaint();
 				death();
 			}
-			if (g != null )g.printMatrixGUI(g.getBoard(), textArea);
+			if (g != null ) {
+				panel.setBoard(g.getBoard());
+				panel.repaint();
+			}
 		}
 	}
 	
@@ -305,7 +339,7 @@ public class gui {
 	public void win() {
 		g = null;
 		message.setText("gud game, son");
-		textArea.setText("");
+		//textArea.setText("");
 	}
 	
 	public void directionAction(char key) {
@@ -318,5 +352,4 @@ public class gui {
 		}
 		
 	}
-	
 }

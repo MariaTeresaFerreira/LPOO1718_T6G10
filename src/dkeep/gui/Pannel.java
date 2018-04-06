@@ -2,7 +2,6 @@ package dkeep.gui;
 
 import java.awt.*;
 import java.awt.image.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
@@ -13,7 +12,7 @@ public class Pannel extends JPanel{
 	private BufferedImage background;
 	private char [][] board;
 	private int lvl;
-	private HashMap<String, BufferedImage> assets;
+	private HashMap<String, BufferedImage> assets = new HashMap<String, BufferedImage>();
 	
 	
 	
@@ -21,9 +20,9 @@ public class Pannel extends JPanel{
 		String pathG = getPath('G'), pathg = getPath('g'), pathH = getPath('H'),
 		pathA = getPath('A'), pathX  = getPath('X'), path8 = getPath('8'), 
 		pathO = getPath('O'), pathI = getPath('I'), pathCloud = getPath('$'), 
-		pathClub = getPath('*'), pathLever = getPath('k');
+		pathClub = getPath('*'), pathLever = getPath('k'), pathK = getPath('K');
 		try {
-			background = ImageIO.read(new File("/resources/background.png"));
+			background = ImageIO.read(new File("resources/background.png"));
 			BufferedImage gW = ImageIO.read(new File(pathG));
 			BufferedImage gS = ImageIO.read(new File(pathg));
 			BufferedImage h = ImageIO.read(new File(pathH));
@@ -35,6 +34,7 @@ public class Pannel extends JPanel{
 			BufferedImage c = ImageIO.read(new File(pathCloud));
 			BufferedImage cl = ImageIO.read(new File(pathClub));
 			BufferedImage l = ImageIO.read(new File(pathLever));
+			BufferedImage mkay = ImageIO.read(new File(pathK));
 			
 			assets.put(pathG, gW);
 			assets.put(pathg, gS);
@@ -47,6 +47,7 @@ public class Pannel extends JPanel{
 			assets.put(pathCloud, c);
 			assets.put(pathClub, cl);
 			assets.put(pathLever, l);
+			assets.put(pathK, mkay);
 			
 			
 		} catch(IOException e) {
@@ -59,7 +60,7 @@ public class Pannel extends JPanel{
 	}
 	
 	public String getPath(char a) {
-		String s = "/resources/";
+		String s = "resources/";
 		if (a == 'G') {
 			s += "KoopaAW.png";
 		}else if (a == 'g') {
@@ -82,23 +83,27 @@ public class Pannel extends JPanel{
 			s += "door.png";
 		}else if (a == 'k') {
 			s += "lever.png";
+		}else if (a == 'K'){
+			s += "marioK.png";
 		}
 		return s;
 	}
 	
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		g.drawImage(background, 0, 0, board.length	, board[0].length , null);
-		int cell = 36*36;
+	protected void paintComponent(Graphics ko) {
+		super.paintComponent(ko);
+		ko.drawImage(background, 0, 0, 36000	, 36000 , null);
+		int cell = 36;
 		String path = "";
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[0].length; j++) {
-				path = "";
-				char toDraw = board[i][j];
-				if (toDraw != 'S' && toDraw != ' ') {
-					path = getPath(toDraw);
-					g.drawImage(assets.get(path), i * cell, j * cell, cell, cell, null);
+		if (board != null) {
+			for (int i = 0; i < board.length; i++) {
+				for (int j = 0; j < board[0].length; j++) {
+					path = "";
+					char toDraw = board[i][j];
+					if (toDraw != 'S' && toDraw != ' ') {
+						path = getPath(toDraw);
+						ko.drawImage(assets.get(path), j * cell, i * cell, cell, cell, null);
+					}
 				}
 			}
 		}
