@@ -109,10 +109,10 @@ public class GameState {
 		Ogre ogr = new Ogre('O', co, cc,'*');
 		this.ogres.add(ogr);
 		Random ogreN = new Random();
-		int n = ogreN.nextInt(no);
+		//int n = ogreN.nextInt(no);
 		int rx, ry;
 		int cy;
-		while(n > 0) {
+		while(no > 1) {
 			rx = ogreN.nextInt(6) + 1;
 			ry = ogreN.nextInt(7) + 1;
 			co = new Coords(rx, ry);
@@ -126,7 +126,7 @@ public class GameState {
 			cc = new Coords(co.X() + 1, cy);
 			ogr = new Ogre('O', co, cc,'*');
 			this.ogres.add(ogr);
-			n--;
+			no--;
 		}
 		this.board = b;
 		this.leverORkey = findChar(b, 'k');
