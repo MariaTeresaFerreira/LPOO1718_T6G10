@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import java.util.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
@@ -16,9 +17,12 @@ import java.awt.Font;
 
 import dkeep.*;
 import dkeep.logic.GameState;
+import dkeep.logic.Coords;
+import dkeep.logic.Ogre;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class gui {
 
@@ -31,11 +35,24 @@ public class gui {
 	private int no;
 	private JLabel message;
 	private Integer unlocked;
-	
+	private JLabel lblSelectItem;
+	private JLabel lblX;
+	private JLabel lblY;
+	private JComboBox<String> charSelect;
+	private JButton btnCustomKeep;
+	private char[][] customMatrix;
+	private Integer x, y;
+	private LinkedList<Coords> customEx = new LinkedList<Coords>();
+	private LinkedList<Ogre> customOGs = new LinkedList<Ogre>();
 	JButton btnUp;
 	JButton btnDown;
 	JButton btnLeft;
 	JButton btnRight;
+	private JTextField xInput;
+	private JTextField yInput;
+	private JButton btnStart;
+	private JButton btnAdd;
+	private JButton btnRemove;
 	
 	/**
 	 * Launch the application.
@@ -70,7 +87,8 @@ public class gui {
 		frame.setBounds(100, 100, 813, 696);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+		
+		customMatrix = customMatrix();
 		JLabel lblNumberOfOgres = new JLabel("Number of Ogres");
 		lblNumberOfOgres.setBounds(23, 20, 152, 16);
 		frame.getContentPane().add(lblNumberOfOgres);
@@ -84,7 +102,7 @@ public class gui {
 		frame.getContentPane().add(ogresNumber);
 		ogresNumber.setColumns(10);
 
-		JComboBox gPersonality = new JComboBox();
+		JComboBox<String> gPersonality = new JComboBox();
 		gPersonality.setBounds(167, 41, 115, 27);
 		gPersonality.addItem("Rookie");
 		gPersonality.addItem("Drunken");
@@ -99,7 +117,7 @@ public class gui {
 				directionAction('w');
 			}
 		});
-		btnUp.setBounds(585, 165, 117, 29);
+		btnUp.setBounds(620, 166, 117, 29);
 		frame.getContentPane().add(btnUp);
 
 		btnDown = new JButton("Down");
@@ -109,7 +127,7 @@ public class gui {
 				
 			}
 		});
-		btnDown.setBounds(585, 247, 117, 29);
+		btnDown.setBounds(620, 248, 117, 29);
 		frame.getContentPane().add(btnDown);
 
 		btnLeft = new JButton("Left");
@@ -118,7 +136,7 @@ public class gui {
 				directionAction('a');
 			}
 		});
-		btnLeft.setBounds(530, 206, 117, 29);
+		btnLeft.setBounds(566, 207, 117, 29);
 		frame.getContentPane().add(btnLeft);
 
 		btnRight = new JButton("Right");
@@ -129,7 +147,7 @@ public class gui {
 				
 			}
 		});
-		btnRight.setBounds(642, 206, 117, 29);
+		btnRight.setBounds(677, 207, 117, 29);
 		frame.getContentPane().add(btnRight);
 
 		// Exit Button
@@ -139,35 +157,8 @@ public class gui {
 				System.exit(0);
 			}
 		});
-		btnExit.setBounds(585, 396, 117, 29);
+		btnExit.setBounds(620, 595, 117, 29);
 		frame.getContentPane().add(btnExit);
-
-		//show game
-		/*
-		textArea = new JTextArea();
-		textArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-			    int keyCode = e.getKeyCode();
-			    switch( keyCode ) { 
-			        case KeyEvent.VK_UP:
-			        		directionAction('w');
-			            break;
-			        case KeyEvent.VK_DOWN:
-			        		directionAction('s');
-			            break;
-			        case KeyEvent.VK_LEFT:
-			        		directionAction('a');
-			            break;
-			        case KeyEvent.VK_RIGHT :
-			        		directionAction('d');
-			            break;
-			     }
-			} 
-		});
-		textArea.setFont(new Font("Courier New", Font.PLAIN, 20));
-		textArea.setBounds(23, 108, 487, 306);
-		frame.getContentPane().add(textArea);*/
 
 		// variable message
 		message = new JLabel("You can start a new game. (max. 5 ogres) ");
@@ -175,7 +166,7 @@ public class gui {
 		frame.getContentPane().add(message);
 
 		// New game Button
-		JButton btnNewGame = new JButton("New Game");
+		JButton btnNewGame = new JButton("Default Game");
 		btnNewGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -183,6 +174,22 @@ public class gui {
 				//frame.requestFocusInWindow();
 				panel.setFocusable(true);
 				panel.requestFocusInWindow();
+				
+				btnUp.setVisible(true);
+				btnDown.setVisible(true);
+				btnLeft.setVisible(true);
+				btnRight.setVisible(true);
+				btnCustomKeep.setVisible(true);
+				lblSelectItem.setVisible(false);
+				lblX.setVisible(false);
+				lblY.setVisible(false);
+				xInput.setVisible(false);
+				yInput.setVisible(false);
+				charSelect.setVisible(false);
+
+
+				
+				
 				
 				
 				boolean inputIsValid = false;
@@ -238,7 +245,7 @@ public class gui {
 
 			}
 		});
-		btnNewGame.setBounds(585, 68, 117, 29);
+		btnNewGame.setBounds(620, 67, 117, 29);
 		frame.getContentPane().add(btnNewGame);
 		
 		panel = new Pannel();
@@ -264,7 +271,172 @@ public class gui {
 		});
 		panel.setBounds(42, 124, 500, 500);
 		frame.getContentPane().add(panel);
+		
+		btnCustomKeep = new JButton("Custom Keep");
+		btnCustomKeep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				btnUp.setVisible(false);
+				btnDown.setVisible(false);
+				btnLeft.setVisible(false);
+				btnRight.setVisible(false);
+				btnCustomKeep.setVisible(false);
+				lblSelectItem.setVisible(true);
+				lblX.setVisible(true);
+				lblY.setVisible(true);
+				xInput.setVisible(true);
+				yInput.setVisible(true);
+				charSelect.setVisible(true);
+				btnStart.setVisible(true);
+				btnAdd.setVisible(true);
+				btnRemove.setVisible(true);
+				
+				
+				
+			}
+		});
+		btnCustomKeep.setBounds(620, 108, 117, 29);
+		frame.getContentPane().add(btnCustomKeep);
+		
+		charSelect = new JComboBox<String>();
+		charSelect.setBounds(566, 324, 228, 26);
+		frame.getContentPane().add(charSelect);
+		charSelect.setVisible(false);
+		charSelect.addItem("Hero");
+		charSelect.addItem("Ogre");
+		charSelect.addItem("Wall");
+		charSelect.addItem("Exit");
+		charSelect.addItem("Key");
+		
+		
+		lblSelectItem = new JLabel("select item");
+		lblSelectItem.setVisible(false);
+		lblSelectItem.setBounds(576, 299, 90, 26);
+		frame.getContentPane().add(lblSelectItem);
+		
+		xInput = new JTextField();
+		xInput.setBounds(576, 402, 90, 26);
+		frame.getContentPane().add(xInput);
+		xInput.setColumns(10);
+		xInput.setVisible(false);
+		
+		yInput = new JTextField();
+		yInput.setBounds(702, 402, 90, 26);
+		frame.getContentPane().add(yInput);
+		yInput.setColumns(10);
+		yInput.setVisible(false);
+		
+		lblX = new JLabel("x");
+		lblX.setVisible(false);
+		lblX.setHorizontalAlignment(SwingConstants.CENTER);
+		lblX.setBounds(576, 389, 90, 16);
+		frame.getContentPane().add(lblX);
+		
+		lblY = new JLabel("y");
+		lblY.setVisible(false);
+		lblY.setHorizontalAlignment(SwingConstants.CENTER);
+		lblY.setBounds(702, 389, 92, 16);
+		frame.getContentPane().add(lblY);
+		
+		btnStart = new JButton("Start");
+		btnStart.setVisible(false);
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnStart.setBounds(620, 534, 117, 29);
+		frame.getContentPane().add(btnStart);
+		
+		btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char s = comboboxToChar(charSelect);
+				boolean validad = false;
+				try {
+					x = Integer.parseInt(xInput.getText());
+				} catch (NumberFormatException e1){
+					message.setText("The input is not valid.");
+				}catch (NullPointerException e1) {
+					message.setText("The input is not valid.");
+				}
+				try {
+					y = Integer.parseInt(yInput.getText());
+				} catch (NumberFormatException e1){
+					message.setText("The input is not valid.");
+				}catch (NullPointerException e1) {
+					message.setText("The input is not valid.");
+				}
+				if (s == 'I' && x < customMatrix.length && x > -1 && y < customMatrix[0].length && y > -1) {
+					Coords cx = new Coords(x, y);
+					customEx.add(cx);
+				}
+				if (x < customMatrix.length && y < customMatrix[0].length && x > 0 && y > 0) {
 
+				
+				
+					if (s == 'A') {
+						if (findCharGUI(customMatrix, 'A').X() != -1 && findCharGUI(customMatrix, 'A').Y() != -1) {
+							customMatrix[x][y] = 'A'; 
+						}
+					}
+					if (s == 'k') {
+						if (findCharGUI(customMatrix, 'k').X() != -1 && findCharGUI(customMatrix, 'k').Y() != -1) {
+							customMatrix[x][y] = 'k'; 
+						}
+					}
+				
+					if (s == 'O') {
+						if (customOGs.size() < 5) {
+							Coords co = new Coords(x, y);
+							Ogre og = new Ogre(s, co, co, '*');
+							customOGs.add(og);
+						}
+					}
+				}
+				
+				panel.setBoard(customMatrix);
+				panel.repaint();	
+			}
+		
+
+		});
+		btnAdd.setBounds(620, 472, 117, 29);
+		frame.getContentPane().add(btnAdd);
+		btnAdd.setVisible(false);
+		
+		btnRemove = new JButton("Clear board");
+		btnRemove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (int i = 1; i < customMatrix.length - 1; i++) {
+					for (int j = 1; j < customMatrix[0].length - 1; j++) {
+						customMatrix[i][j] = ' ';
+					}
+				}
+				panel.setBoard(customMatrix);
+				panel.repaint();
+			}
+		});
+		btnRemove.setBounds(620, 498, 117, 29);
+		frame.getContentPane().add(btnRemove);
+		btnRemove.setVisible(false);
+
+	}
+	
+	public char [][] customMatrix(){
+		char a[][] = {
+				{'X','X','X','X','X','X','X','X','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X','X','X','X','X','X','X','X','X'}
+		};
+		
+		return a;
 	}
 	
 	public void playLvl1GUI(char key, int no) {
@@ -341,7 +513,7 @@ public class gui {
 	
 	public void win() {
 		g = null;
-		message.setText("gud game, son");
+		message.setText("You win (gud game, son)");
 		//textArea.setText("");
 		btnUp.setEnabled(false);
 		btnDown.setEnabled(false);
@@ -360,4 +532,38 @@ public class gui {
 		}
 		
 	}
+	
+	public char comboboxToChar(JComboBox<String> c) {
+		
+		String item = String.valueOf(c.getSelectedItem());
+		
+		switch (item) {
+		case "Hero":
+			return 'A';
+		case "Ogre":
+			return 'O';
+		case "Wall":
+			return 'X';
+		case "Exit":
+			return 'I';
+		case "Key":
+			return 'k';
+		default:
+			break;
+		}
+		
+		return '0';
+	}
+	
+	public static Coords findCharGUI(char board[][], char c) {
+
+		Coords b = new Coords(-1, -1);
+		for(int i = 0; i < board.length; i++)
+			for(int j = 0; j < board[i].length; j++)
+				if (board[i][j] == c) {
+					b.setCoords(i, j);
+				}
+		return b;
+	}
+	
 }
