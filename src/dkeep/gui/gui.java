@@ -181,6 +181,8 @@ public class gui {
 				
 				//textArea.requestFocusInWindow();
 				//frame.requestFocusInWindow();
+				panel.setFocusable(true);
+				panel.requestFocusInWindow();
 				
 				
 				boolean inputIsValid = false;
@@ -333,6 +335,7 @@ public class gui {
 		btnDown.setEnabled(false);
 		btnLeft.setEnabled(false);
 		btnRight.setEnabled(false);
+		panel.setFocusable(false);
 		
 	}
 	
@@ -340,6 +343,11 @@ public class gui {
 		g = null;
 		message.setText("gud game, son");
 		//textArea.setText("");
+		btnUp.setEnabled(false);
+		btnDown.setEnabled(false);
+		btnLeft.setEnabled(false);
+		btnRight.setEnabled(false);
+		panel.setFocusable(false);
 	}
 	
 	public void directionAction(char key) {
