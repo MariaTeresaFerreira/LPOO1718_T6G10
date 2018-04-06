@@ -180,7 +180,7 @@ public class gui {
 				
 				boolean inputIsValid = false;
 				char guardPer = ' ';
-				no = 0; // number os ogres
+				no = 0; // number of ogres
 				unlocked = 0;
 				
 				try {
