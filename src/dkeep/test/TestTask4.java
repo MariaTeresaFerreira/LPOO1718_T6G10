@@ -198,9 +198,9 @@ public class TestTask4 {
 
 	@Test
 	public void TestLvl1() {
-		GameState g1 = new GameState(1, 'r');
-		GameState g2 = new GameState(1, 'd');
-		GameState g3 = new GameState(1, 's');
+		GameState g1 = new GameState(1, 'r', 1);
+		GameState g2 = new GameState(1, 'd', 1);
+		GameState g3 = new GameState(1, 's', 1);
 		
 		assertEquals('r', g1.getGuards().get(0).getPersona());
 		assertEquals('d', g2.getGuards().get(0).getPersona());
@@ -232,8 +232,8 @@ public class TestTask4 {
 	
 	@Test
 	public void TestLvl2() {
-		GameState g1 = new GameState(1, 'r');
-		g1.lvl2();
+		GameState g1 = new GameState(1, 'r', 1);
+		g1.lvl2(1);
 		assertTrue(g1.getHero().isArmed());
 		assertEquals(g1.getHero().getRep(), 'A');
 		//Verifies that the exits were updated
