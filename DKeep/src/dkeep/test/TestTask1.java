@@ -1,11 +1,11 @@
-package dkeep.test;
+package src.dkeep.test;
 
 import static org.junit.Assert.*;
 
 import java.util.*;
 
 import org.junit.Test;
-import dkeep.logic.*;
+import src.dkeep.logic.*;
 
 public class TestTask1 {
 	

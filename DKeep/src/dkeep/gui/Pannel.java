@@ -1,4 +1,4 @@
-package dkeep.gui;
+package src.dkeep.gui;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -22,19 +22,19 @@ public class Pannel extends JPanel{
 		pathO = getPath('O'), pathI = getPath('I'), pathCloud = getPath('$'), 
 		pathClub = getPath('*'), pathLever = getPath('k'), pathK = getPath('K');
 		try {
-			background = ImageIO.read(new File("resources/background.png"));
-			BufferedImage gW = ImageIO.read(new File(pathG));
-			BufferedImage gS = ImageIO.read(new File(pathg));
-			BufferedImage h = ImageIO.read(new File(pathH));
-			BufferedImage a = ImageIO.read(new File(pathA));
-			BufferedImage x = ImageIO.read(new File(pathX));
-			BufferedImage _8 = ImageIO.read(new File(path8));
-			BufferedImage o = ImageIO.read(new File(pathO));
-			BufferedImage i = ImageIO.read(new File(pathI));
-			BufferedImage c = ImageIO.read(new File(pathCloud));
-			BufferedImage cl = ImageIO.read(new File(pathClub));
-			BufferedImage l = ImageIO.read(new File(pathLever));
-			BufferedImage mkay = ImageIO.read(new File(pathK));
+			background = ImageIO.read(getClass().getResource("/resources/background.png"));
+			BufferedImage gW = ImageIO.read(getClass().getResource(pathG));
+			BufferedImage gS = ImageIO.read(getClass().getResource(pathg));
+			BufferedImage h = ImageIO.read(getClass().getResource(pathH));
+			BufferedImage a = ImageIO.read(getClass().getResource(pathA));
+			BufferedImage x = ImageIO.read(getClass().getResource(pathX));
+			BufferedImage _8 = ImageIO.read(getClass().getResource(path8));
+			BufferedImage o = ImageIO.read(getClass().getResource(pathO));
+			BufferedImage i = ImageIO.read(getClass().getResource(pathI));
+			BufferedImage c = ImageIO.read(getClass().getResource(pathCloud));
+			BufferedImage cl = ImageIO.read(getClass().getResource(pathClub));
+			BufferedImage l = ImageIO.read(getClass().getResource(pathLever));
+			BufferedImage mkay = ImageIO.read(getClass().getResource(pathK));
 			
 			assets.put(pathG, gW);
 			assets.put(pathg, gS);
@@ -60,7 +60,7 @@ public class Pannel extends JPanel{
 	}
 	
 	public String getPath(char a) {
-		String s = "resources/";
+		String s = "/resources/";
 		if (a == 'G') {
 			s += "KoopaAW.png";
 		}else if (a == 'g') {

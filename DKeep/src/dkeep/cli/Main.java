@@ -1,7 +1,7 @@
-package dkeep.cli;
+package src.dkeep.cli;
 
 import java.util.*;
-import dkeep.logic.*;
+import src.dkeep.logic.*;
 
 import javax.swing.JTextArea;
 

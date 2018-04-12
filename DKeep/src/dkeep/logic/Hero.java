@@ -1,4 +1,4 @@
-package dkeep.logic;
+package src.dkeep.logic;
 
 public class Hero {
 	

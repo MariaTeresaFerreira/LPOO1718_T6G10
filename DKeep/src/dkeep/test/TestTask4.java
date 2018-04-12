@@ -1,4 +1,4 @@
-package dkeep.test;
+package src.dkeep.test;
 
 import static org.junit.Assert.*;
 
@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 import org.junit.Test;
 
-import dkeep.logic.Coords;
-import dkeep.logic.GameState;
-import dkeep.logic.Guard;
-import dkeep.logic.Ogre;
+import src.dkeep.logic.Coords;
+import src.dkeep.logic.GameState;
+import src.dkeep.logic.Guard;
+import src.dkeep.logic.Ogre;
 
 public class TestTask4 {
 	

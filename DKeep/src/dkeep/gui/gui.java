@@ -1,4 +1,4 @@
-package dkeep.gui;
+package src.dkeep.gui;
 
 import java.awt.EventQueue;
 
@@ -15,11 +15,11 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import java.awt.Font;
 
-import dkeep.*;
-import dkeep.logic.GameState;
-import dkeep.logic.Coords;
-import dkeep.logic.Ogre;
-import dkeep.logic.Guard;
+import src.dkeep.*;
+import src.dkeep.logic.GameState;
+import src.dkeep.logic.Coords;
+import src.dkeep.logic.Ogre;
+import src.dkeep.logic.Guard;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
